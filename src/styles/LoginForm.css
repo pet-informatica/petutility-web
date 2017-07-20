@@ -1,0 +1,28 @@
+.containerLogin {
+    width: 256px;
+    height: 208px;
+    display: grid;
+    grid-template-columns: auto 88px;
+    grid-template-rows: auto auto auto;
+    grid-row-gap: 14px;
+    grid-template-areas:
+    "ustf ustf"
+    "pstf pstf"
+    "fgps lgbt";
+}
+
+.usernameTextField {
+    grid-area: ustf;
+}
+
+.passwordTextField {
+    grid-area: pstf;
+}
+
+.loginRaisedButton {
+    grid-area: lgbt;
+}
+
+.forgetPasswordButton {
+    grid-area: fgps;
+}
