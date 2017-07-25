@@ -7,6 +7,7 @@ import AuthProvider from '../lib/AuthProvider';
 import Home from './Home';
 import Login from './Login';
 import ForgetPassword from './ForgetPassword';
+import Loading from './Loading'
 
 class App extends Component {
 
@@ -39,7 +40,7 @@ class App extends Component {
         return (
             <MuiThemeProvider className={(this.state.userStatus === 'logged') ? '' : 'gridContainer'} >
                 {(this.state.userStatus === 'loading') ?
-                    <p>Carregando</p> :
+                    <Loading /> :
                     <Switch>
                         <Route exact path='/' render={(props) => <Login {...props}  userStatus={this.state.userStatus} />} />
                         <Route exact path='/forgetPassword' render={(props) => <ForgetPassword {...props} />} />
