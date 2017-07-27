@@ -3,43 +3,70 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import ExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-import { Switch } from 'react-router-dom';
+import EventNote from 'material-ui/svg-icons/notification/event-note';
+import MenuItem from '../components/MenuItem';
+import { Switch, Redirect, withRouter, Route } from 'react-router-dom';
+import styled from 'styled-components';
 
 import AuthProvider from '../lib/AuthProvider';
+import AsyncComponent from '../components/AsyncComponent';
+
+const AsyncRecordOfMeeting = AsyncComponent(() => import('./RecordOfMeeting'));
 
 class Home extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            user: AuthProvider.loggedUser,
             drawerOpen: false
         };
-        this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
-    handleDrawerToggle() {
+    componentDidMount() {
+        AuthProvider.onChange(update => {
+            this.setState({
+                user: update.user
+            });
+        });
+    }
+
+    handleClose() {
         this.setState({
-            drawerOpen: !this.satate.drawerOpen
+            drawerOpen: false
         });
     }
 
     render() {
+        if(!this.state.user)
+            return <Redirect to={{
+                pathname: '/',
+                state: {
+                    from: this.props.location
+                }
+            }} />;
         return (
-            <div> 
+            <Wrapper> 
                 <AppBar title="PETUtility" 
                     onLeftIconButtonTouchTap={() => this.setState({drawerOpen: true})} 
                     iconElementRight={<IconButton tooltip="sair" tooltipPosition="bottom-left" onClick={AuthProvider.logout} ><ExitToApp/></IconButton>} />
                 <Drawer docked={false} 
                     open={this.state.drawerOpen}
                     onRequestChange={(drawerOpen) => this.setState({drawerOpen: drawerOpen})} >
-
+                    <MenuItem primaryText="Reunião" leftIcon={<EventNote />} pathname="/recordOfMeeting" onTouchTap={this.handleClose} />
                 </Drawer>
                 <Switch>
-
+                    <Route exact path="/recordOfMeeting" render={(props) => <AsyncRecordOfMeeting {...props} />} />
                 </Switch>
-            </div>
+            </Wrapper>
         );
     }
 }
 
-export default Home;
+export default withRouter(Home);
+
+const Wrapper = styled.div`
+    width: 100%;
+    height: 100%;
+`;
