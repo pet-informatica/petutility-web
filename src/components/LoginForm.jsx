@@ -13,18 +13,18 @@ class LoginForm extends Component {
         super(props);
 
         this.state = {
-            username: '',
+            email: '',
             password: ''
         };
 
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
     }
 
-    handleUsernameChange(ev) {
+    handleEmailChange(ev) {
         this.setState({
-            username: ev.target.value
+            email: ev.target.value
         });
     }
 
@@ -36,20 +36,20 @@ class LoginForm extends Component {
 
     handleLogin(ev) {
         ev.preventDefault();
-        AuthProvider.loginWithUsernameAndPassword(this.state.username, this.state.password);
+        AuthProvider.loginWithEmailAndPassword(this.state.email, this.state.password);
     }
 
     render() {
         return (
             <Paper zDepth={5} >
-                <Form onSubmit={this.handleLogin} > 
+                <Form onSubmit={this.handleLogin} >
                     <H1Title>Entrar</H1Title>
-                    <TextFieldUsername floatingLabelText={'Usuário'}
-                        value={this.state.username}
-                        onChange={this.handleUsernameChange} />
+                    <TextFieldUsername floatingLabelText={'Email'}
+                        value={this.state.email}
+                        onChange={this.handleEmailChange} />
                     <TextFieldPassword floatingLabelText={'Senha'}
                         value={this.state.password}
-                        onChange={this.handlePasswordChange} 
+                        onChange={this.handlePasswordChange}
                         type={'password'} />
                     <RaisedButtonSubmit label={'Entrar'} type="submit" />
                     <LinkForgetPassword to={'/forgetPassword'} >Esqueceu a senha?</LinkForgetPassword>

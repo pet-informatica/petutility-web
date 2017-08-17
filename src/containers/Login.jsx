@@ -15,7 +15,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        AuthProvider.onChange((update) => {
+        AuthProvider.onChange(update => {
             this.setState({
                 user: update.user
             });

@@ -1,4 +1,4 @@
-import Constants from './Constants';
+import API from './API';
 
 class AuthProvider {
     constructor() {
@@ -8,21 +8,19 @@ class AuthProvider {
         this.loggedWithCookie = false;
 
         this.loginWithCookie = this.loginWithCookie.bind(this);
-        this.loginWithUsernameAndPassword = this.loginWithUsernameAndPassword.bind(this);
+        this.loginWithEmailAndPassword = this.loginWithEmailAndPassword.bind(this);
         this.logout = this.logout.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
     async loginWithCookie() {
-        var pStatus = this.status;
+        let pStatus = this.status;
         try {
-            var response = await fetch(Constants.apiURL + '/petiano/login', {
-                credentials: 'include'
-            })
-            if(response.status === 200) {
+            let response = await API.request('/authentication/login', 'GET');
+            if (response.status === 200) {
                 this.status = 'logged';
                 this.loggedUser = await response.json();
-            } else if(response.status === 403) {
+            } else if (response.status === 403) {
                 this.status = 'noCookie';
                 this.loggedUser = null;
             } else {
@@ -34,20 +32,18 @@ class AuthProvider {
             this.status = 'failed';
             this.loggedUser = null;
         }
-        if(this.status !== pStatus && this.onChangeHandler) 
+        if (this.status !== pStatus && this.onChangeHandler)
             this.onChangeHandler({
                 status: this.status,
                 user: this.loggedUser
             });
     }
-    
-    async loginWithUsernameAndPassword(username, password) {
-        var pStatus = this.status;
-        var _self = this;
+
+    async loginWithEmailAndPassword(email, password) {
+        let pStatus = this.status;
+        let _self = this;
         try {
-            var response = await fetch(`${Constants.apiURL}/petiano/login?username=${username}&password=${password}`, {
-                credentials: 'include'
-            });
+            let response = await API.request('/authentication/login', 'POST', {email: email, password: password});
             if(response.status === 200) {
                 _self.status = 'logged';
                 _self.loggedUser = await response.json();
@@ -71,12 +67,10 @@ class AuthProvider {
     }
 
     async logout() {
-        var _self = this;
-        var pStatus = _self.status;
+        let _self = this;
+        let pStatus = _self.status;
         try {
-            var response = await fetch(`${Constants.apiURL}/petiano/logout`, {
-                credentials: 'include'
-            });
+            let response = await API.request(`/authentication/logout`, 'GET');
             if(response.status === 200) {
                 _self.status = 'left';
                 _self.loggedUser = null;
@@ -95,20 +89,20 @@ class AuthProvider {
                 user: _self.loggedUser
             });
     }
-    
+
     onChange(callback) {
         this.onChangeHandler = callback;
-        if(callback)
-            callback({
-                status: this.status,
-                user: this.loggedUser
-            })
-        if(!this.loggedWithCookie) {
-            this.loggedWithCookie = true;
-            this.loginWithCookie();
+        if (callback) {
+          callback({
+            status: this.status,
+            user: this.loggedUser
+          });
+        }
+        if (!this.loggedWithCookie) {
+          this.loggedWithCookie = true;
+          this.loginWithCookie();
         }
     }
-
 }
 
 export default new AuthProvider();
