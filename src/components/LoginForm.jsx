@@ -16,25 +16,21 @@ class LoginForm extends Component {
             email: '',
             password: ''
         };
-
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    handleEmailChange(ev) {
+    handleEmailChange = (ev) => {
         this.setState({
             email: ev.target.value
         });
     }
 
-    handlePasswordChange(ev) {
+    handlePasswordChange = (ev) => {
         this.setState({
             password: ev.target.value
         });
     }
 
-    handleLogin(ev) {
+    handleLogin = (ev) => {
         ev.preventDefault();
         AuthProvider.loginWithEmailAndPassword(this.state.email, this.state.password);
     }

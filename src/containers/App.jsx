@@ -6,7 +6,7 @@ import AuthProvider from '../lib/AuthProvider';
 
 import Home from './Home';
 import Login from './Login';
-import ForgetPassword from './ForgetPassword';
+import ForgotPassword from './ForgotPassword';
 import Loading from '../components/Loading'
 
 class App extends Component {
@@ -33,7 +33,7 @@ class App extends Component {
                     <Loading /> :
                     <Switch>
                         <Route exact path='/' render={(props) => <Login {...props} />} />
-                        <Route exact path='/forgetPassword' render={(props) => <ForgetPassword {...props} />} />
+                        <Route exact path='/forgotPassword' render={(props) => <ForgotPassword {...props} />} />
                         <Route exact path='/**' render={(props) => <Home {...props} />} />
                     </Switch>
                 }
