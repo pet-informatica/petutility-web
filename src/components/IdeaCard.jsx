@@ -24,8 +24,7 @@ class IdeaCard extends Component {
     }
 
     async componentDidMount() {
-        let data = await PETianoService.get(this.PETianoId);
-        let PETiano = await data.json();
+        let PETiano = await PETianoService.get(this.PETianoId);
         this.setState({
             PETiano: PETiano
         });
@@ -51,9 +50,7 @@ class IdeaCard extends Component {
     };
 
     async saveChanges(newIdea) {
-        let data = {};
-        data = await IdeaFactory.update(newIdea);
-        let idea = await data.json();
+        let idea = await IdeaFactory.update(newIdea);
         this.setState({
             Title: idea.Title,
             Description: idea.Description

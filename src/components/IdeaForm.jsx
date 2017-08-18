@@ -35,7 +35,7 @@ class IdeaForm extends Component {
 
     render() {
         return (
-            <Form>
+            <Form onSubmit={this.submit}>
                 <TextField 
                     floatingLabelText={'Título'}
                     value={this.state.Title}
@@ -52,7 +52,7 @@ class IdeaForm extends Component {
                 />
                 <Div>
                     <RaisedButton style={style} label="Cancelar" onClick={this.props.handleCancel} />
-                    <RaisedButton style={style} label="Salvar" disabled={this.state.Title.length === 0} primary={true} onClick={this.submit} />
+                    <RaisedButton style={style} label="Salvar" disabled={this.state.Title.length === 0} primary={true} type={"submit"} />
                 </Div>
             </Form>
         );

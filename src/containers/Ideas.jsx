@@ -22,8 +22,7 @@ class Ideas extends PureComponent {
     }
 
     async componentDidMount() {
-        let data = await IdeaFactory.query();
-        let ideas = await data.json();
+        let ideas = await IdeaFactory.query();
         this.setState({
             loading: false,
             ideas: ideas
@@ -43,9 +42,7 @@ class Ideas extends PureComponent {
     };
 
     async saveChanges(newIdea) {
-        let data = {};
-        data = await IdeaFactory.create(newIdea);
-        let idea = await data.json();
+        let idea = await IdeaFactory.create(newIdea);
         let ideas = this.state.ideas;
         ideas.push(idea);
         this.setState({
@@ -81,7 +78,7 @@ class Ideas extends PureComponent {
                     }
                 </IdeasList>
                 <AddButton>
-                    <FloatingActionButton onClick={this.openEditForm}>
+                    <FloatingActionButton onClick={this.openEditForm} title="Adicionar Ideia">
                         <ContentAdd />
                     </FloatingActionButton>
                 </AddButton>

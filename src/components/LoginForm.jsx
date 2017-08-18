@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import styled from 'styled-components';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import { Link, withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import Utils from '../lib/Utils';
 
 import AuthProvider from '../lib/AuthProvider';
 
@@ -11,22 +12,35 @@ class LoginForm extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            isValid: false
         };
+    }
+
+    componentDidMount = () => {
+        this.validate();
     }
 
     handleEmailChange = (ev) => {
         this.setState({
             email: ev.target.value
         });
+        this.validate();
     }
 
     handlePasswordChange = (ev) => {
         this.setState({
             password: ev.target.value
+        });
+        this.validate();
+    }
+
+    validate = () => {
+        let val = Utils.validateEmail(this.state.email);
+        this.setState({
+            isValid: val && (this.state.password.length > 0)
         });
     }
 
@@ -40,15 +54,19 @@ class LoginForm extends Component {
             <Paper zDepth={5} >
                 <Form onSubmit={this.handleLogin} >
                     <H1Title>Entrar</H1Title>
-                    <TextFieldUsername floatingLabelText={'Email'}
+                    <TextFieldEmail floatingLabelText={'Email'}
                         value={this.state.email}
-                        onChange={this.handleEmailChange} />
+                        onChange={this.handleEmailChange}
+                        errorText={this.state.isValid ? '' :'Digite um email válido'}
+                    />
                     <TextFieldPassword floatingLabelText={'Senha'}
                         value={this.state.password}
                         onChange={this.handlePasswordChange}
-                        type={'password'} />
-                    <RaisedButtonSubmit label={'Entrar'} type="submit" />
-                    <LinkForgetPassword to={'/forgetPassword'} >Esqueceu a senha?</LinkForgetPassword>
+                        type={'password'}
+                        errorText={this.state.password.length > 0 ? '' : 'Digite uma senha'}
+                    />
+                    <RaisedButtonSubmit label={'Entrar'} type="submit" disabled={!this.state.isValid}/>
+                    <LinkForgetPassword to={'/forgotPassword'} >Esqueceu a senha?</LinkForgetPassword>
                 </Form>
             </Paper>
         );
@@ -75,7 +93,7 @@ const H1Title = styled.h1`
     font-weight: normal;
 `;
 
-const TextFieldUsername = styled(TextField)`
+const TextFieldEmail = styled(TextField)`
     grid-area: ustf;
 `;
 

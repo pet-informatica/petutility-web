@@ -13,6 +13,7 @@ import MenuItem from '../components/MenuItem';
 import AuthProvider from '../lib/AuthProvider';
 import AsyncComponent from '../components/AsyncComponent';
 import Ideas from './Ideas';
+import Calendar from './Calendar';
 
 const AsyncRecordOfMeeting = AsyncComponent(() => import('./RecordOfMeeting'));
 
@@ -65,6 +66,7 @@ class Home extends Component {
                 <Switch>
                     <Route exact path="/recordOfMeeting" render={(props) => <AsyncRecordOfMeeting {...props} />} />
                     <Route exact path="/ideas" render={() => <Ideas />} />
+                    <Route exact path="/calendar" render={() => <Calendar />} />
                 </Switch>
             </Wrapper>
         );
@@ -76,4 +78,5 @@ export default withRouter(Home);
 const Wrapper = styled.div`
     width: 100%;
     height: 100%;
+    margin: 0;
 `;
