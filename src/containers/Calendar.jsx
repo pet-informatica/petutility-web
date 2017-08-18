@@ -20,11 +20,10 @@ class Calendar extends PureComponent {
         this.state = {
             isEditing: false,
             currEvent: null,
-            events: [],
-            BigCalendar: <Loading />
+            events: []
         };
         this.saveChanges = this.saveChanges.bind(this);
-        this.removeEventFromList = this.removeEventFromList.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     async componentDidMount() {
@@ -32,14 +31,8 @@ class Calendar extends PureComponent {
         events = events.map(e => {
             return { Id: e.Id, title: e.Title, start: e.Start, end: e.End };
         });
-        let cal = <BigCalendar
-            style={style}
-            events={events}
-            onSelectEvent={this.openEvent}
-        />;
         this.setState({
-            events: events,
-            BigCalendar: cal
+            events: events
         });
     }
 
@@ -80,29 +73,18 @@ class Calendar extends PureComponent {
         } else {
             events.push(event);
         }
-        let cal = <BigCalendar
-            style={style}
-            events={events}
-            onSelectEvent={this.openEvent}
-        />;
         this.setState({
-            events: events,
-            BigCalendar: cal
+            events: events
         });
         this.closeForm();
     }
 
-    async removeEventFromList(oldEventId) {
+    async delete(oldEventId) {
+        await EventFactory.delete(oldEventId);
         let events = this.state.events;
         events = await events.filter(event => event.Id !== oldEventId);
-        let cal = <BigCalendar
-            style={style}
-            events={events}
-            onSelectEvent={this.openEvent}
-        />;
         this.setState({
-            events: events,
-            BigCalendar: cal
+            events: events
         });
         this.closeForm();
     }
@@ -123,7 +105,11 @@ class Calendar extends PureComponent {
         return (
             <Wrapper>
                 <CalendarWrapper>
-                    {this.state.BigCalendar}
+                    <BigCalendar
+                        style={style}
+                        events={this.state.events}
+                        onSelectEvent={this.openEvent}
+                    />
                 </CalendarWrapper>
                 <AddButton>
                     <FloatingActionButton onClick={this.openEditForm}>
@@ -136,7 +122,12 @@ class Calendar extends PureComponent {
                     open={this.state.isEditing}
                     onRequestClose={this.closeForm}
                 >
-                    <EventForm event={this.state.currEvent} handleCancel={this.closeForm} handleSave={this.saveChanges} />
+                    <EventForm 
+                        event={this.state.currEvent}
+                        handleDelete={this.delete}
+                        handleCancel={this.closeForm}
+                        handleSave={this.saveChanges}
+                    />
                 </Dialog>
             </Wrapper>
         );

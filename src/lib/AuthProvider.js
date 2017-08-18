@@ -1,22 +1,25 @@
 import API from './API';
 
 class AuthProvider {
+
     constructor() {
         this.status = 'loading';
         this.loggedUser = null;
         this.onChangeHandler = null;
         this.loggedWithCookie = false;
+        this.resource = 'authentication';
 
         this.loginWithCookie = this.loginWithCookie.bind(this);
         this.loginWithEmailAndPassword = this.loginWithEmailAndPassword.bind(this);
         this.logout = this.logout.bind(this);
+        this.forgotPassword = this.forgotPassword.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
     async loginWithCookie() {
         let pStatus = this.status;
         try {
-            let response = await API.request('/authentication/login', 'GET');
+            let response = await API.request(`/${this.resource}/login`, 'GET');
             if (response.status === 200) {
                 this.status = 'logged';
                 this.loggedUser = await response.json();
@@ -28,7 +31,7 @@ class AuthProvider {
                 this.loggedUser = null;
             }
         } catch(err) {
-            console.error(err)
+            console.error(err);
             this.status = 'failed';
             this.loggedUser = null;
         }
@@ -43,8 +46,8 @@ class AuthProvider {
         let pStatus = this.status;
         let _self = this;
         try {
-            let response = await API.request('/authentication/login', 'POST', {email: email, password: password});
-            if(response.status === 200) {
+            let response = await API.request(`/${this.resource}/login`, 'POST', {email: email, password: password});
+            if (response.status === 200) {
                 _self.status = 'logged';
                 _self.loggedUser = await response.json();
             } else if(response.status === 403) {
@@ -59,7 +62,7 @@ class AuthProvider {
             _self.status = 'failed';
             _self.loggedUser = null;
         }
-        if(_self.status !== pStatus && _self.onChangeHandler)
+        if (_self.status !== pStatus && _self.onChangeHandler)
             _self.onChangeHandler({
                 status: _self.status,
                 user: _self.loggedUser
@@ -70,8 +73,8 @@ class AuthProvider {
         let _self = this;
         let pStatus = _self.status;
         try {
-            let response = await API.request(`/authentication/logout`, 'GET');
-            if(response.status === 200) {
+            let response = await API.request(`/${this.resource}/logout`, 'GET');
+            if (response.status === 200) {
                 _self.status = 'left';
                 _self.loggedUser = null;
             } else {
@@ -90,6 +93,10 @@ class AuthProvider {
             });
     }
 
+    async forgotPassword(email) {
+        await API.request(`/${this.resource}/forgot`, 'POST', { email: email });
+    }
+
     onChange(callback) {
         this.onChangeHandler = callback;
         if (callback) {
@@ -105,4 +112,4 @@ class AuthProvider {
     }
 }
 
-export default new AuthProvider();
+export default (new AuthProvider());

@@ -15,38 +15,35 @@ class LoginForm extends Component {
         this.state = {
             email: '',
             password: '',
-            isValid: false
+            isValid: true
         };
-    }
-
-    componentDidMount = () => {
-        this.validate();
     }
 
     handleEmailChange = (ev) => {
         this.setState({
             email: ev.target.value
         });
-        this.validate();
     }
 
     handlePasswordChange = (ev) => {
         this.setState({
             password: ev.target.value
         });
-        this.validate();
     }
 
     validate = () => {
         let val = Utils.validateEmail(this.state.email);
+        let ok = val && (this.state.password.length > 0)
         this.setState({
-            isValid: val && (this.state.password.length > 0)
+            isValid: ok
         });
+        return ok;
     }
 
     handleLogin = (ev) => {
         ev.preventDefault();
-        AuthProvider.loginWithEmailAndPassword(this.state.email, this.state.password);
+        if (this.validate())
+            AuthProvider.loginWithEmailAndPassword(this.state.email, this.state.password);
     }
 
     render() {
@@ -65,8 +62,8 @@ class LoginForm extends Component {
                         type={'password'}
                         errorText={this.state.password.length > 0 ? '' : 'Digite uma senha'}
                     />
-                    <RaisedButtonSubmit label={'Entrar'} type="submit" disabled={!this.state.isValid}/>
                     <LinkForgetPassword to={'/forgotPassword'} >Esqueceu a senha?</LinkForgetPassword>
+                    <RaisedButtonSubmit label={'Entrar'} type="submit" disabled={!this.state.isValid}/>
                 </Form>
             </Paper>
         );

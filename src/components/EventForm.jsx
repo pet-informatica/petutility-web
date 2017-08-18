@@ -79,7 +79,12 @@ class EventForm extends Component {
         );
     }
 
-    submit = () => {
+    delete = () => {
+        this.props.handleDelete(this.event.Id);
+    }
+
+    submit = (ev) => {
+        ev.preventDefault();
         let event = this.event;
         event.Title = this.state.Title;
         let start = {
@@ -154,6 +159,7 @@ class EventForm extends Component {
                     </TableBody>
                 </Table>
                 <Div>
+                    {this.event.Id?<RaisedButton style={style} label="Deletar" onClick={this.delete} secondary={true}/>:''}
                     <RaisedButton style={style} label="Cancelar" onClick={this.props.handleCancel} />
                     <RaisedButton style={style} label="Salvar" disabled={this.isDisabled()} primary={true} type={"submit"} />
                 </Div>

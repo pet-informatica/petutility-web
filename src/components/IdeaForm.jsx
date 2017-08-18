@@ -26,7 +26,8 @@ class IdeaForm extends Component {
         });
     }
 
-    submit = () => {
+    submit = (ev) => {
+        ev.preventDefault();
         let idea = this.idea;
         idea.Title = this.state.Title;
         idea.Description = this.state.Description;
