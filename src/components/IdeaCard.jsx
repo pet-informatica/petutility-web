@@ -79,17 +79,17 @@ class IdeaCard extends Component {
         ];
         return (
             <Card style={style} >
-                {
-                    this.state.PETiano !== null ? 
-                    <CardHeader 
-                        title={this.state.PETiano.Name}
-                        avatar={this.state.PETiano.Photo}
-                    />:<Loading />
-                }
                 <CardTitle title={this.state.Title} />
                 <CardText>
                     {this.state.Description}
                 </CardText>
+                {
+                    this.state.PETiano !== null ?
+                        <CardHeader
+                            title={this.state.PETiano.Name}
+                            avatar={this.state.PETiano.Photo}
+                        /> : <Loading />
+                }
                 <CardActions>
                     <RaisedButton label="Delete" secondary={true} onClick={this.openDeleteForm}/>
                     <RaisedButton label="Editar" primary={true} onClick={this.openEditForm}/>

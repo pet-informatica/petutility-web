@@ -18,6 +18,7 @@ class Calendar extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             isEditing: false,
             currEvent: null,
             events: []
@@ -32,6 +33,7 @@ class Calendar extends PureComponent {
             return { Id: e.Id, title: e.Title, start: e.Start, end: e.End };
         });
         this.setState({
+            loading: false,
             events: events
         });
     }
@@ -102,6 +104,8 @@ class Calendar extends PureComponent {
     }
 
     render() {
+        if (this.state.loading)
+            return (<Loading />);
         return (
             <Wrapper>
                 <CalendarWrapper>

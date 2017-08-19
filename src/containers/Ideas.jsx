@@ -68,8 +68,8 @@ class Ideas extends PureComponent {
                 <IdeasList>
                     {
                         this.state.ideas.map((idea, i) =>
-                            <IdeaCard 
-                                key={i}
+                            <IdeaCard
+                                key={i} 
                                 idea={idea}
                                 saveChanges={this.saveChanges}
                                 removeIdeaFromList={this.removeIdeaFromList}
@@ -99,5 +99,5 @@ class Ideas extends PureComponent {
 export default Ideas;
 
 const Wrapper = styled.div``;
-const IdeasList = styled.div`margin: 0 15%;`;
+const IdeasList = styled.div`margin: 0 10%;`;
 const AddButton = styled.div`position: fixed; bottom: 0; right: 0; padding: 30px;`;

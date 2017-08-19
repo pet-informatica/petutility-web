@@ -6,27 +6,55 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import Utils from '../lib/Utils';
 
-class EventForm extends Component {
+class ActivityForm extends Component {
 
     constructor(props) {
         super(props);
-        this.event = this.props.event !== null ? this.props.event : {Title: '', Start: null, End: null};
+        this.activity = { Title: '', Start: null, End: null, Participants: 0, Positive: '', Negative: '', Comments: '' };
         this.state = {
-            Title: this.event.Title,
+            Title: this.activity.Title,
             Start: {
-                date: this.event.Start,
-                time: this.event.Start
+                date: this.activity.Start,
+                time: this.activity.Start
             },
             End: {
-                date: this.event.End,
-                time: this.event.End
-            }
+                date: this.activity.End,
+                time: this.activity.End
+            },
+            Participants: this.activity.Participants,
+            Positive: this.activity.Positive,
+            Negative: this.activity.Negative,
+            Comments: this.activity.Comments
         }
     }
 
     handleTitleChange = (ev) => {
         this.setState({
             Title: ev.target.value
+        });
+    }
+
+    handleParticipantsChange = (ev) => {
+        this.setState({
+            Participants: ev.target.value
+        });
+    }
+
+    handlePositiveChange = (ev) => {
+        this.setState({
+            Positive: ev.target.value
+        });
+    }
+
+    handleNegativeChange = (ev) => {
+        this.setState({
+            Negative: ev.target.value
+        });
+    }
+
+    handleCommentsChange = (ev) => {
+        this.setState({
+            Comments: ev.target.value
         });
     }
 
@@ -76,21 +104,25 @@ class EventForm extends Component {
             this.state.Start.date === null ||
             this.state.Start.time === null ||
             this.state.End.date === null ||
-            this.state.End.time === null
+            this.state.End.time === null ||
+            this.state.Participants <= 0 ||
+            this.state.Positive.length === 0 ||
+            this.state.Negative.length === 0 ||
+            this.state.Comments.length === 0
         );
-    }
-
-    delete = () => {
-        this.props.handleDelete(this.event.Id);
     }
 
     submit = (ev) => {
         ev.preventDefault();
-        let event = this.event;
-        event.Title = this.state.Title;
-        event.Start = Utils.parseDateTime(this.state.Start.date, this.state.Start.time);
-        event.End = Utils.parseDateTime(this.state.End.date, this.state.End.time);
-        this.props.handleSave(event);
+        let activity = this.activity;
+        activity.Title = this.state.Title;
+        activity.Start = Utils.parseDateTime(this.state.Start.date, this.state.Start.time);
+        activity.End = Utils.parseDateTime(this.state.End.date, this.state.End.time);
+        activity.Participants = this.state.Participants;
+        activity.Positive = this.state.Positive;
+        activity.Negative = this.state.Negative;
+        activity.Comments = this.state.Comments;
+        this.props.handleSave(activity);
     }
 
     render() {
@@ -107,7 +139,7 @@ class EventForm extends Component {
                     <TableBody>
                         <TableRow>
                             <Text>
-                                Início do evento
+                                Início da atividade
                             </Text>
                         </TableRow>
                         <TableRow>
@@ -129,7 +161,7 @@ class EventForm extends Component {
                         </TableRow>
                         <TableRow>
                             <Text>
-                                Término do evento
+                                Término da atividade
                             </Text>
                         </TableRow>
                         <TableRow>
@@ -149,10 +181,43 @@ class EventForm extends Component {
                                 />
                             </Date>
                         </TableRow>
+                        <TableRow>
+                            <Text>
+                                <TextField
+                                    floatingLabelText={'Número de Participantes'}
+                                    value={this.state.Participants}
+                                    onChange={this.handleParticipantsChange}
+                                    errorText={this.state.Participants > 0 ? '' : 'Precisa de no mínimo 1 participante'}
+                                />
+                            </Text>
+                        </TableRow>
                     </TableBody>
                 </Table>
+                <TextField
+                    floatingLabelText={'Pontos Positivos'}
+                    value={this.state.Positive}
+                    onChange={this.handlePositiveChange}
+                    multiLine={true}
+                    fullWidth={true}
+                    errorText={this.state.Positive.length > 0 ? '' : 'Campo necessário'}
+                />
+                <TextField
+                    floatingLabelText={'Pontos Negativos'}
+                    value={this.state.Negative}
+                    onChange={this.handleNegativeChange}
+                    multiLine={true}
+                    fullWidth={true}
+                    errorText={this.state.Negative.length > 0 ? '' : 'Campo necessário'}
+                />
+                <TextField
+                    floatingLabelText={'Comentários'}
+                    value={this.state.Comments}
+                    onChange={this.handleCommentsChange}
+                    multiLine={true}
+                    fullWidth={true}
+                    errorText={this.state.Comments.length > 0 ? '' : 'Campo necessário'}
+                />
                 <Div>
-                    {this.event.Id?<RaisedButton style={style} label="Deletar" onClick={this.delete} secondary={true}/>:''}
                     <RaisedButton style={style} label="Cancelar" onClick={this.props.handleCancel} />
                     <RaisedButton style={style} label="Salvar" disabled={this.isDisabled()} primary={true} type={"submit"} />
                 </Div>
@@ -162,7 +227,7 @@ class EventForm extends Component {
 
 }
 
-export default EventForm;
+export default ActivityForm;
 
 const style = {
     margin: 8
@@ -172,7 +237,7 @@ const pickerStyle = {
 };
 const Form = styled.form``;
 const Div = styled.div``;
-const Table = styled.table`width: 100%;`;
+const Table = styled.table`width: 80%;`;
 const TableBody = styled.tbody``;
 const TableRow = styled.tr``;
 const Date = styled.td`text-align: center;`;

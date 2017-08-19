@@ -14,6 +14,7 @@ import AuthProvider from '../lib/AuthProvider';
 import AsyncComponent from '../components/AsyncComponent';
 import Ideas from './Ideas';
 import Calendar from './Calendar';
+import Activities from './Activities';
 
 const AsyncRecordOfMeeting = AsyncComponent(() => import('./RecordOfMeeting'));
 
@@ -67,6 +68,7 @@ class Home extends Component {
                     <Route exact path="/recordOfMeeting" render={(props) => <AsyncRecordOfMeeting {...props} />} />
                     <Route exact path="/ideas" render={() => <Ideas />} />
                     <Route exact path="/calendar" render={() => <Calendar />} />
+                    <Route exact path="/activities" render={() => <Activities />} />
                 </Switch>
             </Wrapper>
         );
