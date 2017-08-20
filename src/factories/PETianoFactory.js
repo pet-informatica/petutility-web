@@ -9,6 +9,11 @@ class PETianoFactory {
         return await data.json();
     }
 
+    static async update(PETiano) {
+        let data = await API.upload(`/${this.resource}/`, 'PUT', PETiano);
+        return await data.json();
+    }
+
 }
 
 export default PETianoFactory;

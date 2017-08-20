@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import BigCalendar from 'react-big-calendar';
-import moment from 'moment';
 import styled from 'styled-components';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Dialog from 'material-ui/Dialog';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Loading from '../components/Loading';
-import EventForm from '../components/EventForm';
+import EventDialog from '../components/EventDialog';
 import EventFactory from '../factories/EventFactory';
-
+import moment from 'moment';
+import 'moment/locale/pt-br';
 import '../../node_modules/react-big-calendar/lib/css/react-big-calendar.css';
 
 BigCalendar.momentLocalizer(moment);
@@ -25,12 +24,13 @@ class Calendar extends PureComponent {
         };
         this.saveChanges = this.saveChanges.bind(this);
         this.delete = this.delete.bind(this);
+        this.openEvent = this.openEvent.bind(this);
     }
 
     async componentDidMount() {
         let events = await EventFactory.query();
         events = events.map(e => {
-            return { Id: e.Id, title: e.Title, start: e.Start, end: e.End };
+            return { Id: e.Id, title: e.Title, start: new Date(e.Start), end: new Date(e.End) };
         });
         this.setState({
             loading: false,
@@ -91,14 +91,16 @@ class Calendar extends PureComponent {
         this.closeForm();
     }
 
-    openEvent = (event, e) => {
-        this.setState({
+    async openEvent(event, e) {
+        await this.setState({
             currEvent: {
                 Id: event.Id,
                 Title: event.title,
                 Start: new Date(event.start),
                 End: new Date(event.end)
-            },
+            }
+        });
+        await this.setState({
             isEditing: true
         });
     }
@@ -106,11 +108,26 @@ class Calendar extends PureComponent {
     render() {
         if (this.state.loading)
             return (<Loading />);
+        const messages = {
+            allDay: 'Todo o Dia',
+            previous: '<',
+            next: '>',
+            today: 'Hoje',
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia',
+            agenda: 'Agenda',
+            date: 'Data',
+            time: 'Horário',
+            event: 'Evento'
+        };
         return (
             <Wrapper>
                 <CalendarWrapper>
                     <BigCalendar
+                        messages={messages}
                         style={style}
+                        culture={'pt-br'}
                         events={this.state.events}
                         onSelectEvent={this.openEvent}
                     />
@@ -120,19 +137,18 @@ class Calendar extends PureComponent {
                         <ContentAdd />
                     </FloatingActionButton>
                 </AddButton>
-                <Dialog
-                    title={(this.state.currEvent === null ? "Criar":"Editar") + " Evento"}
-                    modal={false}
-                    open={this.state.isEditing}
-                    onRequestClose={this.closeForm}
-                >
-                    <EventForm 
+                {
+                    this.state.isEditing ? 
+                    <EventDialog
+                        title={(this.state.currEvent === null ? "Criar ": "Editar ") + "Evento"}
+                        open={this.state.isEditing}
                         event={this.state.currEvent}
+                        onRequestClose={this.closeForm}
                         handleDelete={this.delete}
-                        handleCancel={this.closeForm}
                         handleSave={this.saveChanges}
-                    />
-                </Dialog>
+                    /> : null
+                }
+                
             </Wrapper>
         );
     }

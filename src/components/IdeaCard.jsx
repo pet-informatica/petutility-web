@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import IdeaForm from './IdeaForm';
-import Loading from './Loading';
-import IdeaFactory from '../factories/IdeaFactory';
-import PETianoService from '../services/PETianoService';
 import Dialog from 'material-ui/Dialog';
 import { Card, CardActions, CardHeader, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import IdeaDialog from './IdeaDialog';
+import Loading from './Loading';
+import IdeaFactory from '../factories/IdeaFactory';
+import PETianoService from '../services/PETianoService';
 
 class IdeaCard extends Component {
 
@@ -67,12 +68,12 @@ class IdeaCard extends Component {
 
     render() {
         const deleteActions = [
-            <RaisedButton
+            <FlatButton
                 label="Deletar"
                 onClick={this.delete}
                 secondary={true}
             />,
-            <RaisedButton
+            <FlatButton
                 label="Cancelar"
                 onClick={this.closeForms}
             />
@@ -91,8 +92,8 @@ class IdeaCard extends Component {
                         /> : <Loading />
                 }
                 <CardActions>
-                    <RaisedButton label="Delete" secondary={true} onClick={this.openDeleteForm}/>
                     <RaisedButton label="Editar" primary={true} onClick={this.openEditForm}/>
+                    <RaisedButton label="Delete" secondary={true} onClick={this.openDeleteForm}/>
                 </CardActions>
                 <Dialog
                     title="Confirmar Remoção"
@@ -103,14 +104,13 @@ class IdeaCard extends Component {
                 >
                     Você tem certeza que deseja deletar a ideia com titulo: "{this.state.Title}"?
                 </Dialog>
-                <Dialog
-                    title="Editar Ideia"
-                    modal={false}
+                <IdeaDialog
+                    title={"Editar Ideia"}
+                    idea={this.props.idea}
                     open={this.state.isEditing}
                     onRequestClose={this.closeForms}
-                >
-                    <IdeaForm idea={this.props.idea} handleCancel={this.closeForms} handleSave={this.saveChanges}/>
-                </Dialog>
+                    handleSave={this.saveChanges}
+                />
             </Card>
         );
     }

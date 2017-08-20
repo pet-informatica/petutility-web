@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { Switch, Redirect, withRouter, Route } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
-import IconButton from 'material-ui/IconButton';
-import ExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import Description from 'material-ui/svg-icons/action/description';
 import EventNote from 'material-ui/svg-icons/notification/event-note';
 import LightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline';
 import History from 'material-ui/svg-icons/action/history';
 import styled from 'styled-components';
 import MenuItem from '../components/MenuItem';
+import ProfileMenu from '../components/ProfileMenu';
 import AuthProvider from '../lib/AuthProvider';
+import PETianoService from '../services/PETianoService';
 import AsyncComponent from '../components/AsyncComponent';
 import Ideas from './Ideas';
 import Calendar from './Calendar';
 import Activities from './Activities';
+import Profile from './Profile';
 
 const AsyncRecordOfMeeting = AsyncComponent(() => import('./RecordOfMeeting'));
 
@@ -22,8 +23,10 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
+        let user = AuthProvider.loggedUser;
+        PETianoService.set(user);
         this.state = {
-            user: AuthProvider.loggedUser,
+            user: user,
             drawerOpen: false
         };
         this.handleClose = this.handleClose.bind(this);
@@ -53,12 +56,16 @@ class Home extends Component {
             }} />;
         return (
             <Wrapper>
-                <AppBar title="PETUtility"
+                <AppBar 
+                    title="PETUtility"
                     onLeftIconButtonTouchTap={() => this.setState({drawerOpen: true})}
-                    iconElementRight={<IconButton tooltip="sair" tooltipPosition="bottom-left" onClick={AuthProvider.logout} ><ExitToApp/></IconButton>} />
-                <Drawer docked={false}
+                    iconElementRight={<ProfileMenu />} 
+                />
+                <Drawer 
+                    docked={false}
                     open={this.state.drawerOpen}
-                    onRequestChange={(drawerOpen) => this.setState({drawerOpen: drawerOpen})} >
+                    onRequestChange={(drawerOpen) => this.setState({drawerOpen: drawerOpen})} 
+                >
                     <MenuItem primaryText="Reunião" leftIcon={<Description />} pathname="/recordOfMeeting" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="Calendário" leftIcon={<EventNote />} pathname="/calendar" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="Ideias" leftIcon={<LightbulbOutline />} pathname="/ideas" onTouchTap={this.handleClose} />
@@ -69,6 +76,7 @@ class Home extends Component {
                     <Route exact path="/ideas" render={() => <Ideas />} />
                     <Route exact path="/calendar" render={() => <Calendar />} />
                     <Route exact path="/activities" render={() => <Activities />} />
+                    <Route exact path="/profile" render={() => <Profile />} />
                 </Switch>
             </Wrapper>
         );

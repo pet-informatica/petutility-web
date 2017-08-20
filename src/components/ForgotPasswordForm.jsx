@@ -61,7 +61,6 @@ class ForgotPasswordForm extends Component {
             <Paper zDepth={5} >
                 <Form onSubmit={this.submit}>
                     <H1Title>Esqueceu a senha?</H1Title>
-                    <Text>Enviaremos um email para você</Text>
                     <TextFieldEmail floatingLabelText={'Email'}
                         value={this.state.email}
                         onChange={this.handleEmailChange}
@@ -101,9 +100,6 @@ const Form = styled.form`
 const H1Title = styled.h1`
     grid-area: tth1;
     font-weight: normal;
-`;
-const Text = styled.p`
-    grid-area: pmsg;
 `;
 const TextFieldEmail = styled(TextField) `
     grid-area: mail;

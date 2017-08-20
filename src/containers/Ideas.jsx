@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Dialog from 'material-ui/Dialog';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Loading from '../components/Loading';
 import IdeaCard from '../components/IdeaCard';
-import IdeaForm from '../components/IdeaForm';
+import IdeaDialog from '../components/IdeaDialog';
 import IdeaFactory from '../factories/IdeaFactory';
 
 class Ideas extends PureComponent {
@@ -62,7 +61,7 @@ class Ideas extends PureComponent {
 
     render() {
         if (this.state.loading)
-            return <Loading/>
+            return (<Loading/>);
         return (
             <Wrapper>
                 <IdeasList>
@@ -82,14 +81,13 @@ class Ideas extends PureComponent {
                         <ContentAdd />
                     </FloatingActionButton>
                 </AddButton>
-                <Dialog
-                    title="Criar Ideia"
-                    modal={false}
+                <IdeaDialog 
+                    title={"Criar Ideia"}
                     open={this.state.isEditing}
                     onRequestClose={this.closeForm}
-                >
-                    <IdeaForm idea={this.props.idea} handleCancel={this.closeForm} handleSave={this.saveChanges} />
-                </Dialog>
+                    idea={this.props.idea}
+                    handleSave={this.saveChanges} 
+                />
             </Wrapper>
         );
     }
