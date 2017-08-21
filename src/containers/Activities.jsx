@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import Loading from '../components/Loading';
+import AddButton from '../components/AddButton';
 import ActivityCard from '../components/ActivityCard';
 import ActivityDialog from '../components/ActivityDialog';
 import ActivityFactory from '../factories/ActivityFactory';
@@ -57,11 +56,7 @@ class Activity extends PureComponent {
                 <ActivityList>
                     {this.state.activities.map((a, i) => <ActivityCard key={i} activity={a} />)}
                 </ActivityList>
-                <AddButton>
-                    <FloatingActionButton onClick={this.openEditForm} title="Adicionar Atividade">
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </AddButton>
+                <AddButton onClick={this.openEditForm} title={"Adicionar Atividade"} />
                 <ActivityDialog
                     title="Criar Atividade"
                     open={this.state.isEditing}
@@ -79,4 +74,3 @@ export default Activity;
 
 const Wrapper = styled.div` max-width: 100%;`;
 const ActivityList = styled.div`margin: 0 10%;`;
-const AddButton = styled.div`position: fixed; bottom: 0; right: 0; padding: 30px;`;

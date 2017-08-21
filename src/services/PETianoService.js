@@ -4,7 +4,17 @@ class PETianoService {
 
     constructor() {
         // map
-        this.PETianos = {};
+        this.PETianos = new Map();
+    }
+
+    /**
+     * Pega todos os PETianos do servidor
+     * e armazena em cache
+     */
+    async getAll() {
+        let data = await PETianoFactory.query();
+        await data.forEach(user => this.PETianos.set(user.Id, user));
+        return data;
     }
 
     /**
@@ -15,8 +25,8 @@ class PETianoService {
      */
     async get(id) {
         if (!this.PETianos[id])
-            this.PETianos[id] = await PETianoFactory.get(id);
-        return this.PETianos[id];
+            this.PETianos.set(id, await PETianoFactory.get(id));
+        return this.PETianos.get(id);
     }
 
     /**
@@ -25,7 +35,7 @@ class PETianoService {
      * @param {user data} PETiano 
      */
     async update(PETiano) {
-        this.PETianos[PETiano.Id] = await PETianoFactory.update(PETiano);
+        this.PETianos.set(PETiano.Id, await PETianoFactory.update(PETiano));
     }
 
     /**
@@ -33,7 +43,12 @@ class PETianoService {
      * @param {user data} PETiano 
      */
     set(PETiano) {
-        this.PETianos[PETiano.Id] = PETiano;
+        this.PETianos.set(PETiano.Id, PETiano);
+    }
+
+    async invite(email) {
+        let data = await PETianoFactory.create({email: email});
+        this.PETianos.set(data.Id, data);
     }
 
 }

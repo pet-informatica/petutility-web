@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import AddButton from '../components/AddButton';
 import Loading from '../components/Loading';
 import IdeaCard from '../components/IdeaCard';
 import IdeaDialog from '../components/IdeaDialog';
@@ -76,11 +75,7 @@ class Ideas extends PureComponent {
                         )
                     }
                 </IdeasList>
-                <AddButton>
-                    <FloatingActionButton onClick={this.openEditForm} title="Adicionar Ideia">
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </AddButton>
+                <AddButton onClick={this.openEditForm} title="Adicionar Ideia" />
                 <IdeaDialog 
                     title={"Criar Ideia"}
                     open={this.state.isEditing}
@@ -98,4 +93,3 @@ export default Ideas;
 
 const Wrapper = styled.div``;
 const IdeasList = styled.div`margin: 0 10%;`;
-const AddButton = styled.div`position: fixed; bottom: 0; right: 0; padding: 30px;`;

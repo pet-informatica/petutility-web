@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import BigCalendar from 'react-big-calendar';
 import styled from 'styled-components';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import AddButton from '../components/AddButton';
 import Loading from '../components/Loading';
 import EventDialog from '../components/EventDialog';
 import EventFactory from '../factories/EventFactory';
@@ -132,11 +131,7 @@ class Calendar extends PureComponent {
                         onSelectEvent={this.openEvent}
                     />
                 </CalendarWrapper>
-                <AddButton>
-                    <FloatingActionButton onClick={this.openEditForm}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </AddButton>
+                <AddButton onClick={this.openEditForm} title={"Adicionar Evento"}/>
                 {
                     this.state.isEditing ? 
                     <EventDialog
@@ -161,5 +156,4 @@ const Wrapper = styled.div``;
 const CalendarWrapper = styled.div`margin: 1% 5%;`;
 const style = {
     height: window.innerHeight-100
-}
-const AddButton = styled.div`position: fixed; bottom: 0; right: 0; padding: 30px;`;
+};

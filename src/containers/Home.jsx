@@ -6,6 +6,7 @@ import Description from 'material-ui/svg-icons/action/description';
 import EventNote from 'material-ui/svg-icons/notification/event-note';
 import LightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline';
 import History from 'material-ui/svg-icons/action/history';
+import People from 'material-ui/svg-icons/social/people';
 import styled from 'styled-components';
 import MenuItem from '../components/MenuItem';
 import ProfileMenu from '../components/ProfileMenu';
@@ -16,6 +17,7 @@ import Ideas from './Ideas';
 import Calendar from './Calendar';
 import Activities from './Activities';
 import Profile from './Profile';
+import PETianos from './PETianos';
 
 const AsyncRecordOfMeeting = AsyncComponent(() => import('./RecordOfMeeting'));
 
@@ -70,6 +72,7 @@ class Home extends Component {
                     <MenuItem primaryText="Calendário" leftIcon={<EventNote />} pathname="/calendar" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="Ideias" leftIcon={<LightbulbOutline />} pathname="/ideas" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="Resumo de Atividades" leftIcon={<History />} pathname="/activities" onTouchTap={this.handleClose} />
+                    <MenuItem primaryText="PETianos" leftIcon={<People />} pathname="/users" onTouchTap={this.handleClose} />
                 </Drawer>
                 <Switch>
                     <Route exact path="/recordOfMeeting" render={(props) => <AsyncRecordOfMeeting {...props} />} />
@@ -77,6 +80,7 @@ class Home extends Component {
                     <Route exact path="/calendar" render={() => <Calendar />} />
                     <Route exact path="/activities" render={() => <Activities />} />
                     <Route exact path="/profile" render={() => <Profile />} />
+                    <Route exact path="/users" render={() => <PETianos />} />
                 </Switch>
             </Wrapper>
         );

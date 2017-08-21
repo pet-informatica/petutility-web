@@ -182,7 +182,7 @@ class Profile extends PureComponent {
         return (
             <Wrapper>
                 <Card style={styles.card}>
-                    <Form>
+                    <Form onSubmit={e => e.preventDefault()}>
                         <CardMedia>
                             <ProfilePhoto
                                 src={this.state.Photo}
