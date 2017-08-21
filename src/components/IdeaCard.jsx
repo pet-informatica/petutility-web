@@ -51,19 +51,19 @@ class IdeaCard extends Component {
     };
 
     async saveChanges(newIdea) {
+        this.closeForms();
         let idea = await IdeaFactory.update(newIdea);
         this.setState({
             Title: idea.Title,
             Description: idea.Description
         });
-        this.closeForms();
     }
 
     async delete() {
+        this.closeForms();
         let ideaId = this.props.idea.Id;
         await IdeaFactory.delete(ideaId);
         this.props.removeIdeaFromList(ideaId);
-        this.closeForms();
     }
 
     render() {

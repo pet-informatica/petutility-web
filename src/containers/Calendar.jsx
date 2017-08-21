@@ -51,6 +51,7 @@ class Calendar extends PureComponent {
     }
 
     async saveChanges(newEvent) {
+        this.closeForm();
         let event = {};
         if (newEvent.Id) {
             event = await EventFactory.update(newEvent);
@@ -77,17 +78,16 @@ class Calendar extends PureComponent {
         this.setState({
             events: events
         });
-        this.closeForm();
     }
 
     async delete(oldEventId) {
+        this.closeForm();
         await EventFactory.delete(oldEventId);
         let events = this.state.events;
         events = await events.filter(event => event.Id !== oldEventId);
         this.setState({
             events: events
         });
-        this.closeForm();
     }
 
     async openEvent(event, e) {

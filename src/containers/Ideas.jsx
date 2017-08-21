@@ -40,13 +40,13 @@ class Ideas extends PureComponent {
     };
 
     async saveChanges(newIdea) {
+        this.closeForm();
         let idea = await IdeaFactory.create(newIdea);
         let ideas = this.state.ideas;
         ideas.push(idea);
         this.setState({
             ideas: ideas
         });
-        this.closeForm();
     }
 
     async removeIdeaFromList(oldIdeaId) {

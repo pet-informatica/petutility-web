@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+import Loading from '../components/Loading';
 import ProfilePhoto from '../components/ProfilePhoto';
 import UploadBox from '../components/UploadBox';
 import Utils from '../lib/Utils';
@@ -77,6 +78,9 @@ class Profile extends PureComponent {
             isUpdating: true 
         });
         await PETianoService.update(data);
+        this.setState({
+            isUpdating: false
+        });
         this.closeForms();
     }
 
@@ -89,6 +93,9 @@ class Profile extends PureComponent {
             isUpdating: true
         });
         await PETianoService.update(data);
+        this.setState({
+            isUpdating: false
+        });
         this.closeForms();
     }
 
@@ -236,11 +243,15 @@ class Profile extends PureComponent {
                                         label={"Salvar"}
                                         primary={true}
                                         onClick={this.saveChanges}
-                                        disabled={(this.state.NameError !== null || this.state.EmailError !== null)}
+                                        disabled={
+                                            (this.state.NameError !== null || this.state.EmailError !== null) ||
+                                            this.state.isUpdating
+                                        }
                                     />
                                     <RaisedButton
                                         label={"Cancelar"}
                                         onClick={this.closeForms}
+                                        disabled={this.state.isUpdating}
                                     />
                                 </CardActions> :
                                 <CardActions>
