@@ -72,5 +72,5 @@ class Activity extends PureComponent {
 
 export default Activity;
 
-const Wrapper = styled.div` max-width: 100%;`;
+const Wrapper = styled.div`max-width: 100%;`;
 const ActivityList = styled.div`margin: 0 10%;`;

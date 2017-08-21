@@ -14,6 +14,7 @@ class PETianos extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             Profile: AuthProvider.loggedUser.Profile,
             open: false,
             Email: '',
@@ -27,7 +28,8 @@ class PETianos extends PureComponent {
     async componentDidMount() {
         let data = await PETianoService.getAll();
         this.setState({
-            PETianos: data
+            PETianos: data,
+            loading: false
         });
     }
 
@@ -127,6 +129,6 @@ class PETianos extends PureComponent {
 
 export default PETianos;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`max-width: 100%;`;
 const PETianosList = styled.div`margin: 0 10%;`;
 const Form = styled.form``;
