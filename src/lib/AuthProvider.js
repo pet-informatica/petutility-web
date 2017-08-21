@@ -43,7 +43,6 @@ class AuthProvider {
     }
 
     async loginWithEmailAndPassword(email, password) {
-        let pStatus = this.status;
         let _self = this;
         try {
             let response = await API.request(`/${this.resource}/login`, 'POST', {email: email, password: password});
@@ -51,7 +50,7 @@ class AuthProvider {
                 _self.status = 'logged';
                 _self.loggedUser = await response.json();
             } else if(response.status === 403) {
-                _self.status = 'noCookie';
+                _self.status = 'wrongCredentials';
                 _self.loggedUser = null;
             } else {
                 _self.status = 'failed';
@@ -62,11 +61,10 @@ class AuthProvider {
             _self.status = 'failed';
             _self.loggedUser = null;
         }
-        if (_self.status !== pStatus && _self.onChangeHandler)
-            _self.onChangeHandler({
-                status: _self.status,
-                user: _self.loggedUser
-            });
+        _self.onChangeHandler({
+            status: _self.status,
+            user: _self.loggedUser
+        });
     }
 
     async logout() {

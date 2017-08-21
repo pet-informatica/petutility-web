@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Dialog from 'material-ui/Dialog';
 import AuthProvider from '../lib/AuthProvider';
 import { Redirect, withRouter } from 'react-router-dom';
 
@@ -10,15 +11,23 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: AuthProvider.loggedUser
+            user: AuthProvider.loggedUser,
+            open: false
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         AuthProvider.onChange(update => {
             this.setState({
-                user: update.user
+                user: update.user,
+                open: (update.status === 'wrongCredentials')
             });
+        });
+    }
+
+    closeDialog = () => {
+        this.setState({
+            open: false
         });
     }
 
@@ -30,6 +39,13 @@ class Login extends Component {
         return (
             <Wrapper>
                 <LoginForm/>
+                <Dialog
+                    modal={false}
+                    open={this.state.open}
+                    onRequestClose={this.closeDialog}
+                >
+                    {"Email e/ou Senha inválidos!"}
+                </Dialog>
             </Wrapper>
         );
     }
