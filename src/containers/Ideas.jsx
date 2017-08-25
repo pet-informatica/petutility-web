@@ -21,6 +21,7 @@ class Ideas extends PureComponent {
 
     async componentDidMount() {
         let ideas = await IdeaFactory.query();
+        await ideas.sort((a, b) => (a.Id > b.Id) ? 1:-1);
         this.setState({
             loading: false,
             ideas: ideas
@@ -40,13 +41,13 @@ class Ideas extends PureComponent {
     };
 
     async saveChanges(newIdea) {
-        this.closeForm();
         let idea = await IdeaFactory.create(newIdea);
         let ideas = this.state.ideas;
         ideas.push(idea);
         this.setState({
             ideas: ideas
         });
+        this.closeForm();
     }
 
     async removeIdeaFromList(oldIdeaId) {

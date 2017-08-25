@@ -29,9 +29,12 @@ class IdeaDialog extends Component {
 
     submit = (ev) => {
         ev.preventDefault();
-        let idea = this.idea;
-        idea.Title = this.state.Title;
-        idea.Description = this.state.Description;
+        let idea = {
+            Title: this.state.Title,
+            Description: this.state.Description
+        };
+        if (this.idea.Id)
+            idea.Id = this.idea.Id;
         this.props.handleSave(idea);
     }
 

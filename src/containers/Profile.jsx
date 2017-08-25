@@ -5,7 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-import Loading from '../components/Loading';
 import ProfilePhoto from '../components/ProfilePhoto';
 import UploadBox from '../components/UploadBox';
 import Utils from '../lib/Utils';
