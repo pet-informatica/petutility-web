@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import styled from 'styled-components';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import { Link, withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import Utils from '../lib/Utils';
 
 import AuthProvider from '../lib/AuthProvider';
 
@@ -11,48 +12,58 @@ class LoginForm extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            username: '',
-            password: ''
+            email: '',
+            password: '',
+            isValid: true
         };
-
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    handleUsernameChange(ev) {
+    handleEmailChange = (ev) => {
         this.setState({
-            username: ev.target.value
+            email: ev.target.value
         });
     }
 
-    handlePasswordChange(ev) {
+    handlePasswordChange = (ev) => {
         this.setState({
             password: ev.target.value
         });
     }
 
-    handleLogin(ev) {
+    validate = () => {
+        let val = Utils.validateEmail(this.state.email);
+        let ok = val && (this.state.password.length > 0)
+        this.setState({
+            isValid: ok
+        });
+        return ok;
+    }
+
+    handleLogin = (ev) => {
         ev.preventDefault();
-        AuthProvider.loginWithUsernameAndPassword(this.state.username, this.state.password);
+        if (this.validate())
+            AuthProvider.loginWithEmailAndPassword(this.state.email, this.state.password);
     }
 
     render() {
         return (
             <Paper zDepth={5} >
-                <Form onSubmit={this.handleLogin} > 
+                <Form onSubmit={this.handleLogin} >
                     <H1Title>Entrar</H1Title>
-                    <TextFieldUsername floatingLabelText={'Usuário'}
-                        value={this.state.username}
-                        onChange={this.handleUsernameChange} />
+                    <TextFieldEmail floatingLabelText={'Email'}
+                        value={this.state.email}
+                        onChange={this.handleEmailChange}
+                        errorText={this.state.isValid ? '' :'Digite um email válido'}
+                    />
                     <TextFieldPassword floatingLabelText={'Senha'}
                         value={this.state.password}
-                        onChange={this.handlePasswordChange} 
-                        type={'password'} />
-                    <RaisedButtonSubmit label={'Entrar'} type="submit" />
-                    <LinkForgetPassword to={'/forgetPassword'} >Esqueceu a senha?</LinkForgetPassword>
+                        onChange={this.handlePasswordChange}
+                        type={'password'}
+                        errorText={this.state.password.length > 0 ? '' : 'Digite uma senha'}
+                    />
+                    <LinkForgetPassword to={'/forgotPassword'} >Esqueceu a senha?</LinkForgetPassword>
+                    <RaisedButtonSubmit label={'Entrar'} type="submit" disabled={!this.state.isValid}/>
                 </Form>
             </Paper>
         );
@@ -79,7 +90,7 @@ const H1Title = styled.h1`
     font-weight: normal;
 `;
 
-const TextFieldUsername = styled(TextField)`
+const TextFieldEmail = styled(TextField)`
     grid-area: ustf;
 `;
 
