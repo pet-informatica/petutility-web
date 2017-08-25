@@ -1,6 +1,6 @@
 class Constants {
     constructor() {
-        this.apiURL = process.env.REACT_APP_BACK_URL || 'http://localhost:80/api';
+        this.apiURL = process.env.API_URL || 'http://localhost:80/api';
     }
 }
 
