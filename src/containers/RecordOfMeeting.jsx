@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
-import YearDropDownMenu from '../components/YearDropDownMenu';
 import { withRouter, Redirect } from 'react-router-dom';
 import queryString from 'query-string';
-import Constants from '../lib/Constants';
-import RecordOfMeetingTable from '../components/RecordOfMeetingTable';
+import Loading from '../components/Loading';
+import RecordOfMeetingCard from '../components/RecordOfMeetingCard';
+import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
 
 class RecordOfMeeting extends PureComponent {
 
@@ -13,35 +12,31 @@ class RecordOfMeeting extends PureComponent {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.state = {
-            loading: false,
-            recordsOfMeeting: []
+            loading: true,
+            recordsOfMeeting: [],
+            recordOfMeeting: null
         }
-        this.fetchRecordsOfMeeting = this.fetchRecordsOfMeeting.bind(this);
     }
 
     async fetchRecordsOfMeeting(inYear) {
-        this.setState({loading: true});
-        try {
-            var { year } = queryString.parse(this.props.location.search);
-            year = inYear || year;
-            const response = await fetch(`${Constants.apiURL}/recordOfMeeting?${queryString.stringify({year: year})}`, {
-                credentials: 'include'
-            });
-            const recordsOfMeeting = await response.json();
-            this.setState({
-                loading: false,
-                recordsOfMeeting: recordsOfMeeting
-            });
-        } catch(err) {
-            console.error(err);
-        }
+        let { year } = queryString.parse(this.props.location.search);
+        year = inYear || year;
+        const recordsOfMeeting = await RecordOfMeetingFactory.query({year: year});
+        const recordOfMeeting = recordsOfMeeting.length > 0 ? 
+            await RecordOfMeetingFactory.get(recordsOfMeeting[0].Id) :
+            null;
+        this.setState({
+            loading: false,
+            recordsOfMeeting: recordsOfMeeting,
+            recordOfMeeting: recordOfMeeting
+        });
     }
 
-    async componentDidMount() {
-        await this.fetchRecordsOfMeeting();
+    componentDidMount() {
+        this.fetchRecordsOfMeeting();
     }
 
-    async componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
         const { year: prevYear } = queryString.parse(this.props.location.search);
         const { year: nextYear } = queryString.parse(nextProps.location.search);
         if(prevYear !== nextYear)
@@ -61,17 +56,21 @@ class RecordOfMeeting extends PureComponent {
             return (
                 <Redirect to={{pathname:'/recordOfMeeting', search: queryString.stringify({year: new Date().getFullYear()})}} />
             );
+        if (this.state.loading)
+            return (<Loading/>);
         return (
             <Wrapper>
-                <H2>Reuniões</H2>
-                <Toolbar style={{padding: '30px'}}>
-                    <ToolbarGroup >
-                        <YearDropDownMenu maxHeight={300} value={Number(year)} onChange={this.handleChange} />
-                    </ToolbarGroup>
-                </Toolbar>
-                <RecordOfMeetingTable recordsOfMeeting={this.state.recordsOfMeeting} />
+                <RecordOfMeetingCard RecordOfMeeting={this.state.recordOfMeeting}/>
             </Wrapper>
         );
+        /*
+        <Toolbar style={{ padding: '30px' }}>
+            <ToolbarGroup >
+                <YearDropDownMenu maxHeight={300} value={Number(year)} onChange={this.handleChange} />
+            </ToolbarGroup>
+        </Toolbar>
+        <RecordOfMeetingTable recordsOfMeeting={this.state.recordsOfMeeting} />
+        */
     }
 
 }
@@ -79,13 +78,9 @@ class RecordOfMeeting extends PureComponent {
 export default withRouter(RecordOfMeeting);
 
 const Wrapper = styled.div`
-    margin: 0 15%;
+    margin: 2% 15%;
 
     @media (max-width: 599px) {
-        margin: 0 10%;
+        margin: 2% 10%;
     }
-`
-
-const H2 = styled.h2`
-    font-family: Roboto, sans-serif;
 `

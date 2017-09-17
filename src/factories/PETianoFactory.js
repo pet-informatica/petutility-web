@@ -14,8 +14,8 @@ class PETianoFactory {
         return await data.json();
     }
 
-    static async update(PETiano) {
-        let data = await API.upload(`/${this.resource}/`, 'PUT', PETiano);
+    static async update(body) {
+        let data = await API.upload(`/${this.resource}/`, 'PUT', body);
         return await data.json();
     }
 
