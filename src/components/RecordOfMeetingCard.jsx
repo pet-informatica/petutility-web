@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import { lightGreen300, red300, orange900 } from 'material-ui/styles/colors';
 import { Card, CardTitle, CardHeader, CardActions } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
-import styled from 'styled-components';
+import RaisedButton from 'material-ui/RaisedButton';
+import FileDownloadIcon from 'material-ui/svg-icons/file/file-download';
 import Loading from './Loading';
 import AgendaPointCard from './AgendaPointCard';
 import PETianoService from '../services/PETianoService';
@@ -120,7 +122,11 @@ class RecordOfMeetingCard extends Component {
                     )}
                 </AgendaPointCards>
                 <CardActions>
-
+                    <RaisedButton
+                        label="Baixar"
+                        primary={true}
+                        icon={<FileDownloadIcon/>}
+                    />
                 </CardActions>
             </Paper>
         );

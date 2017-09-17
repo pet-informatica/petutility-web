@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
+import { Card, CardActions, CardHeader } from 'material-ui/Card';
+import CardText from './CardText';
 import RaisedButton from 'material-ui/RaisedButton';
 
 class AgendaPointCard extends Component {
@@ -8,6 +9,7 @@ class AgendaPointCard extends Component {
         return (
             <Card>
                 <CardHeader
+                    titleStyle={{fontWeight: 'normal'}}
                     title={this.props.AgendaPoint.Title}
                     actAsExpander={true}
                     showExpandableButton={true}
@@ -18,8 +20,16 @@ class AgendaPointCard extends Component {
                 {
                     this.props.IsOpen ? 
                     <CardActions expandable={true}>
-                        <RaisedButton label="Editar" primary={true}/>
-                        <RaisedButton label="Deletar" secondary={true}/>
+                        <RaisedButton
+                            label="Editar"
+                            primary={true}
+                            onClick={() => this.props.handleEdit(this.props.AgendaPoint)}
+                        />
+                        <RaisedButton
+                            label="Deletar"
+                            secondary={true}
+                            onClick={() => this.props.handleDelete(this.props.AgendaPoint)}
+                        />
                     </CardActions>:
                     null
                 }
