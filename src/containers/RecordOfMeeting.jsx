@@ -1,21 +1,25 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import Loading from '../components/Loading';
-import RecordOfMeetingCard from '../components/RecordOfMeetingCard';
+import RecordOfMeetingPaper from '../components/RecordOfMeetingPaper';
 import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
+import RecordOfMeetingMenu from '../components/RecordOfMeetingMenu';
 
 class RecordOfMeeting extends PureComponent {
 
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
         this.state = {
             loading: true,
             recordsOfMeeting: [],
-            recordOfMeeting: null
-        }
+            recordOfMeeting: null,
+            isEditing: false
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.createRecordOfMeeting = this.createRecordOfMeeting.bind(this);
+        this.closeRecordOfMeeting = this.closeRecordOfMeeting.bind(this);
     }
 
     async fetchRecordsOfMeeting(inYear) {
@@ -28,7 +32,8 @@ class RecordOfMeeting extends PureComponent {
         this.setState({
             loading: false,
             recordsOfMeeting: recordsOfMeeting,
-            recordOfMeeting: recordOfMeeting
+            recordOfMeeting: recordOfMeeting,
+            isEditing: recordOfMeeting.Status === 1
         });
     }
 
@@ -43,34 +48,48 @@ class RecordOfMeeting extends PureComponent {
             this.fetchRecordsOfMeeting(nextYear);
     }
 
-    handleChange(ev, idx, val) {
-        this
-            .props
-            .history
-            .push(`/recordOfMeeting?${queryString.stringify({year: val})}`);
+    async handleChange(id) {
+        const recordOfMeeting = await RecordOfMeetingFactory.get(id);
+        this.setState({
+            recordOfMeeting: recordOfMeeting
+        });
+    }
+
+    async createRecordOfMeeting() {
+        const data = await RecordOfMeetingFactory.open(this.state.recordOfMeeting.Id);
+        this.setState({
+            recordOfMeeting: data,
+            isEditing: true
+        });
+    }
+
+    async closeRecordOfMeeting() {
+        const ok = await RecordOfMeetingFactory.close(this.state.recordOfMeeting.Id);
+        if (!ok) {
+            // trow error
+            return;
+        }
+        let rec = this.state.recordOfMeeting;
+        rec.Status = 2;
+        this.setState({
+            recordOfMeeting: rec,
+            isEditing: false
+        });
     }
 
     render() {
-        const { year } = queryString.parse(this.props.location.search);
-        if(!year)
-            return (
-                <Redirect to={{pathname:'/recordOfMeeting', search: queryString.stringify({year: new Date().getFullYear()})}} />
-            );
-        if (this.state.loading)
+        if (this.state.loading || this.state.recordOfMeeting === null)
             return (<Loading/>);
         return (
             <Wrapper>
-                <RecordOfMeetingCard RecordOfMeeting={this.state.recordOfMeeting}/>
+                <RecordOfMeetingPaper RecordOfMeeting={this.state.recordOfMeeting}/>
+                <RecordOfMeetingMenu 
+                    isEditing={this.state.isEditing}
+                    createRecordOfMeeting={this.createRecordOfMeeting}
+                    closeRecordOfMeeting={this.closeRecordOfMeeting}
+                />
             </Wrapper>
         );
-        /*
-        <Toolbar style={{ padding: '30px' }}>
-            <ToolbarGroup >
-                <YearDropDownMenu maxHeight={300} value={Number(year)} onChange={this.handleChange} />
-            </ToolbarGroup>
-        </Toolbar>
-        <RecordOfMeetingTable recordsOfMeeting={this.state.recordsOfMeeting} />
-        */
     }
 
 }

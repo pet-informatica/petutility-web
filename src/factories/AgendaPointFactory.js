@@ -15,7 +15,7 @@ class AgendaPointFactory {
     }
 
     static async create(agendaPoint) {
-        let data = await API.request(`/${this.resource}/${id}`, 'POST', agendaPoint);
+        let data = await API.request(`/${this.resource}`, 'POST', agendaPoint);
         return await data.json();
     }
 
@@ -26,7 +26,7 @@ class AgendaPointFactory {
 
     static async delete(id) {
         let data = await API.request(`/${this.resource}/${id}`, 'DELETE');
-        return await data.json();
+        return data.status === 200;
     }
 
 }

@@ -7,36 +7,54 @@ import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+
 import FileDownloadIcon from 'material-ui/svg-icons/file/file-download';
+
 import Loading from './Loading';
 import AgendaPointCard from './AgendaPointCard';
 import PETianoService from '../services/PETianoService';
+import AgendaPointFactory from '../factories/AgendaPointFactory';
 
 class RecordOfMeetingCard extends Component {
 
     constructor(props) {
         super(props);
-        const RecordOfMeeting = {
+        const RecordOfMeeting = this.propsToObject(props);
+        this.state = {
+            loading: true,
+            RecordOfMeeting: RecordOfMeeting,
+            isEditing: (RecordOfMeeting.Status === 1),
+            PETianos: null
+        };
+        this.editAgendaPoint = this.editAgendaPoint.bind(this);
+        this.deleteAgendaPoint = this.deleteAgendaPoint.bind(this);
+    }
+
+    propsToObject = (props) =>{
+        return {
             Status: props.RecordOfMeeting.Status,
             Date: new Date(props.RecordOfMeeting.Date),
             AteiroId: props.RecordOfMeeting.AteiroId,
             PresidentId: props.RecordOfMeeting.PresidentId,
             AgendaPoints: {
-                NewOutside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 1),
                 Fixed: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 2),
                 Pending: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 3),
-                NewInside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 4)
+                NewInside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 4),
+                NewOutside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 1)
             },
             AbsentsOrLates: {
                 Absents: props.RecordOfMeeting.AbsentsOrLates.filter(({ Type }) => Type === 1),
                 Lates: props.RecordOfMeeting.AbsentsOrLates.filter(({ Type }) => Type === 2)
             }
         };
-        this.state = {
-            loading: true,
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const RecordOfMeeting = this.propsToObject(nextProps);
+        this.setState({
             RecordOfMeeting: RecordOfMeeting,
-            PETianos: null
-        };
+            isEditing: (RecordOfMeeting.Status === 1)
+        });
     }
 
     async componentDidMount() {
@@ -46,6 +64,64 @@ class RecordOfMeetingCard extends Component {
         this.setState({
             loading: false,
             PETianos: PETianos
+        });
+    }
+
+    async editAgendaPoint(agendaPoint) {
+        const data = await AgendaPointFactory.update(agendaPoint);
+        let points = this.state.RecordOfMeeting.AgendaPoints;
+        let check = false;
+        for (const key in points) {
+            if (points.hasOwnProperty(key)) {
+                for (let i=0;i<points[key].length;++i) {
+                    if (points[key][i].Id === agendaPoint.Id) {
+                        points[key][i] = data;
+                        check = true;
+                        break;
+                    }
+                }
+                if (check)
+                    break;
+            }
+        }
+        let rec = this.state.RecordOfMeeting;
+        rec.AgendaPoints = points;
+        this.setState({
+            RecordOfMeeting: rec
+        });
+    }
+
+    async deleteAgendaPoint(agendaPoint) {
+        const ok = await AgendaPointFactory.delete(agendaPoint.Id);
+        if (!ok) {
+            // trow error
+            return;
+        }
+        let points = this.state.RecordOfMeeting.AgendaPoints;
+        let check = false;
+        let k = '';
+        for (const key in points) {
+            if (points.hasOwnProperty(key)) {
+                for (let i = 0; i < points[key].length; ++i) {
+                    if (points[key][i].Id === agendaPoint.Id) {
+                        k = key;
+                        check = true;
+                        break;
+                    }
+                }
+                if (check)
+                    break;
+            }
+        }
+        if (!check) {
+            // agenda point not found
+            return;
+        }
+        let rec = this.state.RecordOfMeeting;
+        rec = JSON.parse(JSON.stringify(rec)); // fast js clone
+        rec.AgendaPoints[k] = await rec.AgendaPoints[k].filter((a) => a.Id !== agendaPoint.Id);
+        this.setState({
+            RecordOfMeeting: rec
         });
     }
 
@@ -103,24 +179,37 @@ class RecordOfMeetingCard extends Component {
                         )}
                     </AbsentsOrLatesList>
                 </AbsentsOrLatesCard>
-                <CardTitle title="Fixos"/>
-                <AgendaPointCards>
-                    {this.state.RecordOfMeeting.AgendaPoints.Fixed.map((a, i) => 
-                        <AgendaPointCard key={i} AgendaPoint={a} IsOpen={this.state.RecordOfMeeting.Status === 1}/>
-                    )}
-                </AgendaPointCards>
-                <CardTitle title="Pendentes"/>
-                <AgendaPointCards>
-                    {this.state.RecordOfMeeting.AgendaPoints.Pending.map((a, i) => 
-                        <AgendaPointCard key={i} AgendaPoint={a} IsOpen={this.state.RecordOfMeeting.Status === 1}/>
-                    )}
-                </AgendaPointCards>
-                <CardTitle title="Novos"/>
-                <AgendaPointCards>
-                    {this.state.RecordOfMeeting.AgendaPoints.NewInside.map((a, i) => 
-                        <AgendaPointCard key={i} AgendaPoint={a} IsOpen={this.state.RecordOfMeeting.Status === 1}/>
-                    )}
-                </AgendaPointCards>
+                {Object.entries(this.state.RecordOfMeeting.AgendaPoints).map((val, i) => {
+                    let title = "";
+                    switch (val[0]) {
+                        case "Fixed":
+                            title = "Fixos";
+                            break;
+                        case "Pending":
+                            title = "Pendentes";
+                            break;
+                        case "NewInside":
+                            title = "Novos";
+                            break;
+                        default:
+                    }
+                    return (
+                        <div key={i}>
+                            <CardTitle title={title} />
+                            <AgendaPointCards>
+                                {this.state.RecordOfMeeting.AgendaPoints[val[0]].map((a, j) =>
+                                    <AgendaPointCard
+                                        key={a.Id}
+                                        AgendaPoint={a}
+                                        IsOpen={this.state.isEditing} 
+                                        handleEdit={this.editAgendaPoint}
+                                        handleDelete={this.deleteAgendaPoint}
+                                    />
+                                )}
+                            </AgendaPointCards>
+                        </div>
+                    );
+                })}
                 <CardActions>
                     <RaisedButton
                         label="Baixar"
@@ -149,7 +238,7 @@ const AbsentsOrLatesList = styled.div`
     flexWrap: wrap;
 `;
 const MyChip = styled(Chip)`
-    margin: 4px!important;
+    margin: 15px 5px!important;
 `;
 const AgendaPointCards = styled.div`
     margin: 0 2%;

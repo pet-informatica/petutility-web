@@ -14,14 +14,14 @@ class RecordOfMeetingFactory {
         return await data.json();
     }
 
-    static async open(id) {
-        let data = await API.request(`/${this.resource}/${id}`, 'POST', {});
+    static async open() {
+        let data = await API.request(`/${this.resource}`, 'POST', {});
         return await data.json();
     }
 
-    static async close() {
-        let data = await API.request(`/${this.resource}`, 'POST', {});
-        return await data.json();
+    static async close(id) {
+        let data = await API.request(`/${this.resource}/${id}`, 'POST', {});
+        return data.status === 200;
     }
 
     static async update(id, body) {

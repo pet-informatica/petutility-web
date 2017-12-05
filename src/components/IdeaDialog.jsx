@@ -53,6 +53,13 @@ class IdeaDialog extends Component {
                 onClick={this.submit}
             />
         ];
+        const dialogStyle = {
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)'
+        };
+
         return (
             <Dialog
                 title={this.props.title}
@@ -60,6 +67,9 @@ class IdeaDialog extends Component {
                 open={this.props.open}
                 onRequestClose={this.props.onRequestClose}
                 actions={actions}
+                autoScrollBodyContent={true}
+                repositionOnUpdate={true}
+                contentStyle={dialogStyle}
             >
                 <Form>
                     <TextField 
@@ -75,6 +85,7 @@ class IdeaDialog extends Component {
                         onChange={this.handleDescriptionChange}
                         multiLine={true}
                         fullWidth={true}
+                        errorText={this.state.Description.length > 0 ? '' : 'Campo necessário'}
                     />
                 </Form>
             </Dialog>

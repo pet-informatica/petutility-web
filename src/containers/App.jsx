@@ -29,6 +29,10 @@ class App extends Component {
             this.setState({
                 userStatus: update.status
             });
+            const pathname = this.props.history.location.pathname;
+            if (update.user === null && pathname !== '/' && pathname !== '/forgotPassword') {
+                this.props.history.push('/', null);
+            }
         });
     }
 

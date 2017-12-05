@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
-import { Card, CardActions, CardHeader, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardActions, CardHeader, CardTitle } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import CardText from './CardText';
 import IdeaDialog from './IdeaDialog';
 import Loading from './Loading';
 import IdeaFactory from '../factories/IdeaFactory';
@@ -102,7 +103,7 @@ class IdeaCard extends Component {
                     open={this.state.isDeleting}
                     onRequestClose={this.closeForms}
                 >
-                    Você tem certeza que deseja deletar a ideia com titulo: "{this.state.Title}"?
+                    {`Você tem certeza que deseja deletar a ideia com titulo: "${this.state.Title}"?`}
                 </Dialog>
                 <IdeaDialog
                     title={"Editar Ideia"}

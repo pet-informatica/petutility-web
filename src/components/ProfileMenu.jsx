@@ -43,7 +43,7 @@ class ProfileMenu extends Component {
                     open={this.state.open}
                     anchorEl={this.state.anchorEl}
                     anchorOrigin={{"horizontal":"left","vertical":"bottom"}}
-                    targetOrigin={{"horizontal":"left","vertical":"top"}}
+                    targetOrigin={{"horizontal":"right","vertical":"top"}}
                     onRequestClose={this.handleRequestClose}
                 >
                     <Menu>

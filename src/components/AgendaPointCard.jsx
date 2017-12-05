@@ -1,21 +1,96 @@
 import React, { Component } from 'react';
 import { Card, CardActions, CardHeader } from 'material-ui/Card';
-import CardText from './CardText';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import CardText from './CardText';
 
 class AgendaPointCard extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            AgendaPoint: this.props.AgendaPoint,
+            isEditing: false,
+            isDeleting: false
+        }
+    }
+
+    handleTextChange = (ev, param) => {
+        let a = this.state.AgendaPoint;
+        a[param] = ev.target.value;
+        this.setState({
+            AgendaPoint: a
+        });
+    }
+
+    openEditDialog = () => {
+        this.setState({
+            isEditing: true
+        });
+    }
+
+    openDeleteDialog = () => {
+        this.setState({
+            isDeleting: true
+        });
+    }
+
+    handleClose = () => {
+        this.setState({
+            isEditing: false,
+            isDeleting: false
+        });
+    }
+
+    handleAction = (callback) => {
+        this.handleClose();
+        callback(this.state.AgendaPoint);
+    }
+
     render() {
+        const editingActions = [
+            <FlatButton
+                label="Cancelar"
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="Salvar"
+                disabled={this.state.AgendaPoint.Title.length === 0 || this.state.AgendaPoint.Description.length === 0}
+                primary={true}
+                onClick={() => this.handleAction(this.props.handleEdit)}
+            />
+        ];
+
+        const deletingActions = [
+            <FlatButton
+                label="Deletar"
+                onClick={() => this.handleAction(this.props.handleDelete)}
+                secondary={true}
+            />,
+            <FlatButton
+                label="Cancelar"
+                onClick={this.handleClose}
+            />
+        ];
+        const dialogStyle = {
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)'
+        };
+
         return (
             <Card>
                 <CardHeader
                     titleStyle={{fontWeight: 'normal'}}
-                    title={this.props.AgendaPoint.Title}
+                    title={this.state.AgendaPoint.Title}
                     actAsExpander={true}
                     showExpandableButton={true}
                 />
                 <CardText expandable={true}>
-                    {this.props.AgendaPoint.Description}
+                    {this.state.AgendaPoint.Description}
                 </CardText>
                 {
                     this.props.IsOpen ? 
@@ -23,16 +98,52 @@ class AgendaPointCard extends Component {
                         <RaisedButton
                             label="Editar"
                             primary={true}
-                            onClick={() => this.props.handleEdit(this.props.AgendaPoint)}
+                            onClick={this.openEditDialog}
                         />
                         <RaisedButton
                             label="Deletar"
                             secondary={true}
-                            onClick={() => this.props.handleDelete(this.props.AgendaPoint)}
+                            onClick={this.openDeleteDialog}
                         />
                     </CardActions>:
                     null
                 }
+                <Dialog
+                    title="Editar ponto de ata"
+                    actions={editingActions}
+                    modal={false}
+                    open={this.state.isEditing}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+                    repositionOnUpdate={true}
+                    autoDetectWindowHeight={true}
+                    contentStyle={dialogStyle}
+                >
+                    <TextField
+                        floatingLabelText={'Título'}
+                        value={this.state.AgendaPoint.Title}
+                        onChange={(ev) => this.handleTextChange(ev, "Title")}
+                        fullWidth={true}
+                        errorText={this.state.AgendaPoint.Title.length > 0 ? '' : 'Campo necessário'}
+                    />
+                    <TextField
+                        floatingLabelText={'Descrição'}
+                        value={this.state.AgendaPoint.Description}
+                        onChange={(ev) => this.handleTextChange(ev, "Description")}
+                        fullWidth={true}
+                        multiLine={true}
+                        errorText={this.state.AgendaPoint.Description.length > 0 ? '' : 'Campo necessário'}
+                    />
+                </Dialog>
+                <Dialog
+                    title="Confirmar Remoção"
+                    actions={deletingActions}
+                    modal={false}
+                    open={this.state.isDeleting}
+                    onRequestClose={this.handleClose}
+                >
+                    {`Você tem certeza que deseja deletar o ponto de ata com o seguinte título: "${this.state.AgendaPoint.Title}"?`}
+                </Dialog>
             </Card>
         );
     }
