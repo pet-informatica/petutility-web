@@ -33,7 +33,7 @@ class RecordOfMeeting extends PureComponent {
             loading: false,
             recordsOfMeeting: recordsOfMeeting,
             recordOfMeeting: recordOfMeeting,
-            isEditing: recordOfMeeting.Status === 1
+            isEditing: recordOfMeeting && (recordOfMeeting.Status === 1)
         });
     }
 
@@ -78,11 +78,14 @@ class RecordOfMeeting extends PureComponent {
     }
 
     render() {
-        if (this.state.loading || this.state.recordOfMeeting === null)
+        if (this.state.loading)
             return (<Loading/>);
         return (
             <Wrapper>
-                <RecordOfMeetingPaper RecordOfMeeting={this.state.recordOfMeeting}/>
+                {
+                    this.state.recordOfMeeting ?
+                    <RecordOfMeetingPaper RecordOfMeeting={this.state.recordOfMeeting}/>: null
+                }
                 <RecordOfMeetingMenu 
                     isEditing={this.state.isEditing}
                     createRecordOfMeeting={this.createRecordOfMeeting}

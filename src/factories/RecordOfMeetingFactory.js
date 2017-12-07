@@ -26,7 +26,7 @@ class RecordOfMeetingFactory {
 
     static async update(id, body) {
         let data = await API.request(`/${this.resource}/${id}`, 'PUT', body);
-        return await data.json();
+        return data.status === 200;
     }
 
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import Utils from '../lib/Utils';
@@ -128,12 +128,12 @@ class ActivityDialog extends Component {
 
     render() {
         const actions = [
-            <RaisedButton
+            <FlatButton
                 style={style}
                 label="Cancelar"
                 onClick={this.props.handleCancel} 
             />,
-            <RaisedButton
+            <FlatButton
                 style={style}
                 label="Salvar"
                 disabled={this.isDisabled()}

@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { lightGreen300, red300, orange900 } from 'material-ui/styles/colors';
+import { lightGreen300, red300, orange900, green500 } from 'material-ui/styles/colors';
 import { Card, CardTitle, CardHeader, CardActions } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import FileDownloadIcon from 'material-ui/svg-icons/file/file-download';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import Loading from './Loading';
 import AgendaPointCard from './AgendaPointCard';
 import PETianoService from '../services/PETianoService';
 import AgendaPointFactory from '../factories/AgendaPointFactory';
+import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
+import RecordOfMeetingEditAteiroOrPresidentDialog from './RecordOfMeetingEditAteiroOrPresidentDialog';
 
 class RecordOfMeetingCard extends Component {
 
@@ -23,24 +27,37 @@ class RecordOfMeetingCard extends Component {
         this.state = {
             loading: true,
             RecordOfMeeting: RecordOfMeeting,
+            President: null,
+            Ateiro: null,
             isEditing: (RecordOfMeeting.Status === 1),
-            PETianos: null
+            PETianos: null,
+            isEditingAteiroOrPresident: false
         };
         this.editAgendaPoint = this.editAgendaPoint.bind(this);
         this.deleteAgendaPoint = this.deleteAgendaPoint.bind(this);
+        this.saveAteiroOrPresident = this.saveAteiroOrPresident.bind(this);
     }
 
     propsToObject = (props) =>{
+        let ag = props.RecordOfMeeting.AgendaPoints;
+        ag.sort((a, b) => {
+            if (a.Id > b.Id)
+                return 1;
+            if (a.Id < b.Id)
+                return -1;
+            return 0;
+        });
         return {
+            Id: props.RecordOfMeeting.Id,
             Status: props.RecordOfMeeting.Status,
             Date: new Date(props.RecordOfMeeting.Date),
             AteiroId: props.RecordOfMeeting.AteiroId,
             PresidentId: props.RecordOfMeeting.PresidentId,
             AgendaPoints: {
-                Fixed: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 2),
-                Pending: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 3),
-                NewInside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 4),
-                NewOutside: props.RecordOfMeeting.AgendaPoints.filter(({ Status }) => Status === 1)
+                Fixed: ag.filter(({ Status }) => Status === 2),
+                Pending: ag.filter(({ Status }) => Status === 3),
+                NewInside: ag.filter(({ Status }) => Status === 4),
+                NewOutside: ag.filter(({ Status }) => Status === 1)
             },
             AbsentsOrLates: {
                 Absents: props.RecordOfMeeting.AbsentsOrLates.filter(({ Type }) => Type === 1),
@@ -59,11 +76,14 @@ class RecordOfMeetingCard extends Component {
 
     async componentDidMount() {
         let PETianos = {};
-        let data = await PETianoService.getAll();
-        await data.forEach(p => PETianos[p.Id] = p);
+        await PETianoService.loadAll();
+        const President = await PETianoService.get(this.state.RecordOfMeeting.PresidentId);
+        const Ateiro = await PETianoService.get(this.state.RecordOfMeeting.AteiroId);
         this.setState({
             loading: false,
-            PETianos: PETianos
+            PETianos: PETianos,
+            President: President,
+            Ateiro: Ateiro
         });
     }
 
@@ -125,26 +145,68 @@ class RecordOfMeetingCard extends Component {
         });
     }
 
+    openAteiroOrPresidentDialog = () => {
+        this.setState({
+            isEditingAteiroOrPresident: true
+        });
+    }
+
+    closeAteiroOrPresidentDialog = () => {
+        this.setState({
+            isEditingAteiroOrPresident: false
+        });
+    }
+
+    async saveAteiroOrPresident(ateiro, president) {
+        const id = this.state.RecordOfMeeting.Id;
+        const body = {
+            PresidentId: president,
+            AteiroId: ateiro
+        };
+        const ok = await RecordOfMeetingFactory.update(id, body);
+        if (!ok) {
+            // throw error
+            return;
+        }
+        const President = await PETianoService.get(president);
+        const Ateiro = await PETianoService.get(ateiro);
+        this.closeAteiroOrPresidentDialog();
+        this.setState({
+            President: President,
+            Ateiro: Ateiro
+        });
+    }
+
     render() {
         if (this.state.loading)
             return (<Loading/>);
-        let President = this.state.PETianos[this.state.RecordOfMeeting.PresidentId];
-        let Ateiro = this.state.PETianos[this.state.RecordOfMeeting.AteiroId];
+
         return (
             <Paper zDepth={2}>
                 <CardTitle title={"Reunião "+this.state.RecordOfMeeting.Date.toLocaleString()} />
-                <PresidentAndAteiroCard>
+                <PresidentAndAteiroCard style={{position: 'relative'}}>
                     <CardHeader
                         title="Presidente"
-                        subtitle={President.Name}
-                        avatar={President.Photo}
+                        subtitle={this.state.President.Name}
+                        avatar={this.state.President.Photo}
                     />
                     <Divider/>
                     <CardHeader
                         title="Ateiro"
-                        subtitle={Ateiro.Name}
-                        avatar={Ateiro.Photo}
+                        subtitle={this.state.Ateiro.Name}
+                        avatar={this.state.Ateiro.Photo}
                     />
+                    {
+                        !this.state.isEditing ? null:
+                        <FloatingActionButton
+                            onClick={this.openAteiroOrPresidentDialog}
+                            backgroundColor={green500}
+                            title="Editar Presidente e Ateiro" // ver tooltip dps
+                            style={{position: 'absolute', right: 20, top: 49, bottom: 49}}
+                        >
+                            <ModeEdit />
+                        </FloatingActionButton>
+                    }
                 </PresidentAndAteiroCard>
                 <AbsentsOrLatesCard>
                     <CardHeader titleColor="white" title="Ausentes"/>
@@ -210,13 +272,23 @@ class RecordOfMeetingCard extends Component {
                         </div>
                     );
                 })}
-                <CardActions>
-                    <RaisedButton
-                        label="Baixar"
-                        primary={true}
-                        icon={<FileDownloadIcon/>}
-                    />
-                </CardActions>
+                {
+                    this.state.isEditing ? null:
+                    <CardActions>
+                        <RaisedButton
+                            label="Baixar"
+                            primary={true}
+                            icon={<FileDownloadIcon/>}
+                        />
+                    </CardActions>
+                }
+                <RecordOfMeetingEditAteiroOrPresidentDialog 
+                    open={this.state.isEditingAteiroOrPresident}
+                    onRequestClose={this.closeAteiroOrPresidentDialog}
+                    president={this.state.President}
+                    ateiro={this.state.Ateiro}
+                    save={this.saveAteiroOrPresident}
+                />
             </Paper>
         );
     }

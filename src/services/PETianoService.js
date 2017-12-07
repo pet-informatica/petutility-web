@@ -11,17 +11,37 @@ class PETianoService {
      * Pega todos os PETianos do servidor
      * e armazena em cache
      */
-    async getAll() {
+    async loadAll() {
         let data = await PETianoFactory.query();
         await data.forEach(user => this.PETianos.set(user.Id, user));
-        return data;
+    }
+
+    /**
+     * Converte o map de PETianos para um array
+     * e o retorna
+     * @returns { Array } lista com PETianos
+     */
+    async getAsArray() {
+        let ret = [];
+        await this.PETianos.forEach((val, key, map) => {
+            ret.push(val);
+        });
+        await ret.sort((a, b) => {
+            if (a.Name > b.Name)
+                return 1;
+            if (a.Name < b.Name)
+                return -1;
+            return 0;
+        });
+        return ret;
     }
 
     /**
      * Caso possua o PETiano em cache,
      * retornar o mesmo e caso não,
      * carregar o PETiano em cache e retornar
-     * @param {user id} id 
+     * @param { number } id do PETiano
+     * @returns { any } PETiano
      */
     async get(id) {
         if (!this.PETianos[id])
@@ -46,6 +66,10 @@ class PETianoService {
         this.PETianos.set(PETiano.Id, PETiano);
     }
 
+    /**
+     * Convida um PETiano ao sistema com base no seu email
+     * @param { string } email 
+     */
     async invite(email) {
         let data = await PETianoFactory.create({email: email});
         this.PETianos.set(data.Id, data);
