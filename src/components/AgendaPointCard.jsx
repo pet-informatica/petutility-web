@@ -7,13 +7,10 @@ import CardText from './CardText';
 
 class AgendaPointCard extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            AgendaPoint: this.props.AgendaPoint,
-            isEditing: false,
-            isDeleting: false
-        }
+    state = {
+        AgendaPoint: this.props.AgendaPoint,
+        isEditing: false,
+        isDeleting: false
     }
 
     handleTextChange = (ev, param) => {
@@ -41,6 +38,15 @@ class AgendaPointCard extends Component {
             isEditing: false,
             isDeleting: false
         });
+    }
+
+    handleFixed = () => {
+        let ag = this.state.AgendaPoint;
+        if (this.state.AgendaPoint.Status !== 2)
+            ag.Status = 2;
+        else
+            ag.Status = 3;
+        this.props.handleEdit(ag);
     }
 
     handleAction = (callback) => {
@@ -99,6 +105,14 @@ class AgendaPointCard extends Component {
                             primary={true}
                             onClick={this.openEditDialog}
                         />
+                        {
+                            this.state.AgendaPoint.Status !== 1 ?
+                            <FlatButton
+                                label={this.state.AgendaPoint.Status === 2 ? "Desafixar" : "Fixar"}
+                                onClick={this.handleFixed}
+                            />:
+                            null
+                        }
                         <FlatButton
                             label="Deletar"
                             secondary={true}

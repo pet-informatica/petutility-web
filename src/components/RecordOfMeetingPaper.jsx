@@ -16,10 +16,11 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import Loading from './Loading';
 import AgendaPointCard from './AgendaPointCard';
-import RecordOfMeetingEditAteiroOrPresidentDialog from './RecordOfMeetingEditAteiroOrPresidentDialog';
-import RecordOfMeetingAddAbsentOrLateDialog from './RecordOfMeetingAddAbsentOrLateDialog';
+import AddAgendaPointDialog from './AddAgendaPointDialog';
+import EditAteiroOrPresidentDialog from './EditAteiroOrPresidentDialog';
+import AddAbsentOrLateDialog from './AddAbsentOrLateDialog';
 
-import Utils from '../lib/Utils';
+import Constants from '../lib/Constants';
 
 import AgendaPointFactory from '../factories/AgendaPointFactory';
 import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
@@ -41,8 +42,10 @@ class RecordOfMeetingCard extends Component {
             PETianos: null,
             isEditingAteiroOrPresident: false,
             isAddingAbsentOrLate: false,
+            isAddingAgendaPoint: false,
             typeOfAbsentOrLate: null
         };
+        this.createAgendaPoint = this.createAgendaPoint.bind(this);
         this.editAgendaPoint = this.editAgendaPoint.bind(this);
         this.deleteAgendaPoint = this.deleteAgendaPoint.bind(this);
         this.saveAteiroOrPresident = this.saveAteiroOrPresident.bind(this);
@@ -52,7 +55,6 @@ class RecordOfMeetingCard extends Component {
 
     propsToObject(props) {
         let ag = props.RecordOfMeeting.AgendaPoints;
-        console.log(props.RecordOfMeeting);
         ag.sort((a, b) => {
             if (a.Id > b.Id)
                 return 1;
@@ -100,6 +102,34 @@ class RecordOfMeetingCard extends Component {
         });
     }
 
+    downloadRecordOfMeeting = () => {
+        const pdf = window.open(`${Constants.apiURL}/recordOfMeeting/${this.state.RecordOfMeeting.Id}/download`, '_blank');
+        pdf.focus();
+    }
+
+    openAddAgendaPointDialog = () => this.setState({ isAddingAgendaPoint: true });
+
+    closeAddAgendaPointDialog = () => this.setState({ isAddingAgendaPoint: false });
+
+    async createAgendaPoint(agendaPoint) {
+        if (this.state.isEditing) {
+            agendaPoint.Status = 4;
+        } else {
+            agendaPoint.Status = 1;
+        }
+        const data = await AgendaPointFactory.create(agendaPoint);
+        this.closeAddAgendaPointDialog();
+        let rec = this.state.RecordOfMeeting;
+        if (this.state.isEditing) {
+            rec.AgendaPoints.NewInside.push(data);
+        } else {
+            rec.AgendaPoints.NewOutside.push(data);
+        }
+        this.setState({
+            RecordOfMeeting: rec
+        });
+    }
+
     async editAgendaPoint(agendaPoint) {
         const data = await AgendaPointFactory.update(agendaPoint);
         let points = this.state.RecordOfMeeting.AgendaPoints;
@@ -118,7 +148,24 @@ class RecordOfMeetingCard extends Component {
             }
         }
         let rec = this.state.RecordOfMeeting;
-        rec.AgendaPoints = points;
+        let ag = [];
+        ag = ag.concat(points.Fixed);
+        ag = ag.concat(points.NewInside);
+        ag = ag.concat(points.NewOutside);
+        ag = ag.concat(points.Pending);
+        ag.sort((a, b) => {
+            if (a.Id > b.Id)
+                return 1;
+            if (a.Id < b.Id)
+                return -1;
+            return 0;
+        });
+        rec.AgendaPoints = {
+            Fixed: ag.filter(({ Status }) => Status === 2),
+            Pending: ag.filter(({ Status }) => Status === 3),
+            NewInside: ag.filter(({ Status }) => Status === 4),
+            NewOutside: ag.filter(({ Status }) => Status === 1)
+        };
         this.setState({
             RecordOfMeeting: rec
         });
@@ -202,7 +249,6 @@ class RecordOfMeetingCard extends Component {
         this.closeAbsentOrLateDialog();
         data.PETiano = await PETianoService.get(data.PETianoId);
         let rec = this.state.RecordOfMeeting;
-        rec = JSON.parse(JSON.stringify(rec));
         rec.AbsentsOrLates.Absents = rec.AbsentsOrLates.Absents.filter(a => a.PETianoId !== data.PETianoId);
         rec.AbsentsOrLates.Lates = rec.AbsentsOrLates.Lates.filter(a => a.PETianoId !== data.PETianoId);
         if (absentOrLate.Type === 1) {
@@ -233,7 +279,7 @@ class RecordOfMeetingCard extends Component {
             return (<Loading/>);
         return (
             <Paper zDepth={2}>
-                <CardTitle title={"Reunião "+this.state.RecordOfMeeting.Date.toLocaleString()} />
+                <CardTitle title={`Reunião ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
                 <PresidentAndAteiroCard style={{position: 'relative'}}>
                     <CardHeader
                         title="Presidente"
@@ -266,7 +312,7 @@ class RecordOfMeetingCard extends Component {
                                 <div key={a.Id}>
                                     <MyChip
                                         backgroundColor={a.IsJustified ? lightGreen300 : red300}
-                                        onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Absents')}
+                                        onRequestDelete={this.state.isEditing ? () => this.deleteAbsentOrLate(a.Id, 'Absents') : null}
                                         data-tip={a.Reason}
                                     >
                                         <Avatar src={a.PETiano.Photo} />
@@ -274,8 +320,8 @@ class RecordOfMeetingCard extends Component {
                                     </MyChip>
                                     <ReactTooltip place="top" type="dark" effect="solid" />
                                 </div>
-                            )}
-                        )}
+                            )
+                        })}
                     </AbsentsOrLatesList>
                     {
                         this.state.isEditing ?
@@ -302,7 +348,7 @@ class RecordOfMeetingCard extends Component {
                                     <MyChip
                                         backgroundColor={a.IsJustified ? lightGreen300 : red300}
                                         data-tip={a.Reason}
-                                        onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Lates')}
+                                        onRequestDelete={this.state.isEditing ? () => this.deleteAbsentOrLate(a.Id, 'Lates') : null}
                                     >
                                         <Avatar src={a.PETiano.Photo} />
                                         {a.PETiano.Name}
@@ -343,6 +389,8 @@ class RecordOfMeetingCard extends Component {
                             break;
                         default:
                     }
+                    if (val[0] === "NewOutside")
+                        return null;
                     return (
                         <div key={i}>
                             <CardTitle title={title} />
@@ -360,27 +408,38 @@ class RecordOfMeetingCard extends Component {
                         </div>
                     );
                 })}
-                {
-                    this.state.isEditing ? null:
-                    <CardActions>
+                <RecordOfMeetingCardActions>
+                    {
+                        this.state.isEditing ? 
+                        <FlatButton
+                            onClick={this.openAddAgendaPointDialog}
+                            label="Adicionar Ponto de Pauta"
+                            icon={<ContentAdd />}
+                        /> :
                         <FlatButton
                             label="Baixar"
-                            icon={<FileDownloadIcon/>}
+                            onClick={this.downloadRecordOfMeeting}
+                            icon={<FileDownloadIcon />}
                         />
-                    </CardActions>
-                }
-                <RecordOfMeetingEditAteiroOrPresidentDialog 
+                    }
+                </RecordOfMeetingCardActions>
+                <EditAteiroOrPresidentDialog 
                     open={this.state.isEditingAteiroOrPresident}
                     onRequestClose={this.closeAteiroOrPresidentDialog}
                     president={this.state.President}
                     ateiro={this.state.Ateiro}
                     save={this.saveAteiroOrPresident}
                 />
-                <RecordOfMeetingAddAbsentOrLateDialog
+                <AddAbsentOrLateDialog
                     open={this.state.isAddingAbsentOrLate}
                     onRequestClose={this.closeAbsentOrLateDialog}
                     type={this.state.typeOfAbsentOrLate}
                     save={this.saveAbsentOrLate}
+                />
+                <AddAgendaPointDialog
+                    open={this.state.isAddingAgendaPoint}
+                    onRequestClose={this.closeAddAgendaPointDialog}
+                    save={this.createAgendaPoint}
                 />
             </Paper>
         );
@@ -408,4 +467,8 @@ const MyChip = styled(Chip)`
 `;
 const AgendaPointCards = styled.div`
     margin: 0 2%;
+`;
+const RecordOfMeetingCardActions = styled(CardActions)`
+    margin: 1% 2% 3% 1%;
+    padding-bottom: 10px!important;
 `;
