@@ -13,6 +13,7 @@
     "react-scripts": "1.0.10",
     "react-speed-dial": "^0.4.7",
     "react-tap-event-plugin": "^2.0.1",
+    "react-tooltip": "^3.4.0",
     "styled-components": "^2.1.1"
   },
   "scripts": {

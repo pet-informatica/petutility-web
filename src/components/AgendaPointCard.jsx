@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Card, CardActions, CardHeader } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
@@ -95,12 +94,12 @@ class AgendaPointCard extends Component {
                 {
                     this.props.IsOpen ? 
                     <CardActions expandable={true}>
-                        <RaisedButton
+                        <FlatButton
                             label="Editar"
                             primary={true}
                             onClick={this.openEditDialog}
                         />
-                        <RaisedButton
+                        <FlatButton
                             label="Deletar"
                             secondary={true}
                             onClick={this.openDeleteDialog}

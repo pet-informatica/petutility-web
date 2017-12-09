@@ -51,7 +51,8 @@ class RecordOfMeeting extends PureComponent {
     async handleChange(id) {
         const recordOfMeeting = await RecordOfMeetingFactory.get(id);
         this.setState({
-            recordOfMeeting: recordOfMeeting
+            recordOfMeeting: recordOfMeeting,
+            isEditing: recordOfMeeting.Status === 1
         });
     }
 
@@ -69,12 +70,7 @@ class RecordOfMeeting extends PureComponent {
             // trow error
             return;
         }
-        let rec = this.state.recordOfMeeting;
-        rec.Status = 2;
-        this.setState({
-            recordOfMeeting: rec,
-            isEditing: false
-        });
+        this.handleChange(this.state.recordOfMeeting.Id);
     }
 
     render() {

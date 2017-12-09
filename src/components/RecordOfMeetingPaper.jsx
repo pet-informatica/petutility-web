@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 import { lightGreen300, red300, orange900, green500 } from 'material-ui/styles/colors';
 import { Card, CardTitle, CardHeader, CardActions } from 'material-ui/Card';
@@ -6,18 +7,25 @@ import Divider from 'material-ui/Divider';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import FileDownloadIcon from 'material-ui/svg-icons/file/file-download';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import Loading from './Loading';
 import AgendaPointCard from './AgendaPointCard';
-import PETianoService from '../services/PETianoService';
+import RecordOfMeetingEditAteiroOrPresidentDialog from './RecordOfMeetingEditAteiroOrPresidentDialog';
+import RecordOfMeetingAddAbsentOrLateDialog from './RecordOfMeetingAddAbsentOrLateDialog';
+
+import Utils from '../lib/Utils';
+
 import AgendaPointFactory from '../factories/AgendaPointFactory';
 import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
-import RecordOfMeetingEditAteiroOrPresidentDialog from './RecordOfMeetingEditAteiroOrPresidentDialog';
+import AbsentOrLateFactory from '../factories/AbsentOrLateFactory';
+
+import PETianoService from '../services/PETianoService';
 
 class RecordOfMeetingCard extends Component {
 
@@ -31,15 +39,20 @@ class RecordOfMeetingCard extends Component {
             Ateiro: null,
             isEditing: (RecordOfMeeting.Status === 1),
             PETianos: null,
-            isEditingAteiroOrPresident: false
+            isEditingAteiroOrPresident: false,
+            isAddingAbsentOrLate: false,
+            typeOfAbsentOrLate: null
         };
         this.editAgendaPoint = this.editAgendaPoint.bind(this);
         this.deleteAgendaPoint = this.deleteAgendaPoint.bind(this);
         this.saveAteiroOrPresident = this.saveAteiroOrPresident.bind(this);
+        this.saveAbsentOrLate = this.saveAbsentOrLate.bind(this);
+        this.deleteAbsentOrLate = this.deleteAbsentOrLate.bind(this);
     }
 
-    propsToObject = (props) =>{
+    propsToObject(props) {
         let ag = props.RecordOfMeeting.AgendaPoints;
+        console.log(props.RecordOfMeeting);
         ag.sort((a, b) => {
             if (a.Id > b.Id)
                 return 1;
@@ -138,24 +151,15 @@ class RecordOfMeetingCard extends Component {
             return;
         }
         let rec = this.state.RecordOfMeeting;
-        rec = JSON.parse(JSON.stringify(rec)); // fast js clone
-        rec.AgendaPoints[k] = await rec.AgendaPoints[k].filter((a) => a.Id !== agendaPoint.Id);
+        rec.AgendaPoints[k] = rec.AgendaPoints[k].filter((a) => a.Id !== agendaPoint.Id);
         this.setState({
             RecordOfMeeting: rec
         });
     }
 
-    openAteiroOrPresidentDialog = () => {
-        this.setState({
-            isEditingAteiroOrPresident: true
-        });
-    }
+    openAteiroOrPresidentDialog = () => this.setState({ isEditingAteiroOrPresident: true })
 
-    closeAteiroOrPresidentDialog = () => {
-        this.setState({
-            isEditingAteiroOrPresident: false
-        });
-    }
+    closeAteiroOrPresidentDialog = () => this.setState({ isEditingAteiroOrPresident: false })
 
     async saveAteiroOrPresident(ateiro, president) {
         const id = this.state.RecordOfMeeting.Id;
@@ -177,10 +181,54 @@ class RecordOfMeetingCard extends Component {
         });
     }
 
+    openAbsentOrLateDialog = (type) => {
+        this.setState({
+            isAddingAbsentOrLate: true,
+            typeOfAbsentOrLate: type
+        });
+    }
+
+    closeAbsentOrLateDialog = () => this.setState({ isAddingAbsentOrLate: false })
+
+    async saveAbsentOrLate(absentOrLate) {
+        const body = {
+            RecordOfMeetingId: this.state.RecordOfMeeting.Id,
+            PETianoId: absentOrLate.PETianoId,
+            Reason: absentOrLate.Reason,
+            IsJustified: absentOrLate.IsJustified,
+            Type: absentOrLate.Type
+        };
+        let data = await AbsentOrLateFactory.create(body);
+        this.closeAbsentOrLateDialog();
+        data.PETiano = await PETianoService.get(data.PETianoId);
+        let rec = this.state.RecordOfMeeting;
+        rec = JSON.parse(JSON.stringify(rec));
+        if (absentOrLate.Type === 1) {
+            rec.AbsentsOrLates.Absents.push(data);
+        } else {
+            rec.AbsentsOrLates.Lates.push(data);
+        }
+        this.setState({
+           RecordOfMeeting: rec 
+        });
+    }
+
+    async deleteAbsentOrLate(id, param) {
+        const ok = await AbsentOrLateFactory.delete(id);
+        if (!ok) {
+            // throw error
+            return;
+        }
+        let rec = this.state.RecordOfMeeting;
+        rec.AbsentsOrLates[param] = rec.AbsentsOrLates[param].filter(a => a.Id !== id);
+        this.setState({
+            RecordOfMeeting: rec
+        });
+    }
+
     render() {
         if (this.state.loading)
             return (<Loading/>);
-
         return (
             <Paper zDepth={2}>
                 <CardTitle title={"Reunião "+this.state.RecordOfMeeting.Date.toLocaleString()} />
@@ -209,14 +257,15 @@ class RecordOfMeetingCard extends Component {
                     }
                 </PresidentAndAteiroCard>
                 <AbsentsOrLatesCard>
-                    <CardHeader titleColor="white" title="Ausentes"/>
+                    <CardHeader title="Ausentes"/>
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Absents.map((a, i) =>{
-                            a.PETiano = this.state.PETianos[a.PETianoId];
                             return (
                                 <MyChip 
-                                    key={i}
+                                    key={a.Id}
                                     backgroundColor={a.IsJustified ? lightGreen300 : red300}
+                                    onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Absents')}
+                                    data-tip={a.Reason}
                                 >
                                     <Avatar src={a.PETiano.Photo} />
                                     {a.PETiano.Name}
@@ -224,14 +273,32 @@ class RecordOfMeetingCard extends Component {
                             )}
                         )}
                     </AbsentsOrLatesList>
-                    <CardHeader titleColor="white" title="Atrasados"/>
+                    {
+                        this.state.isEditing ?
+                        <FloatingActionButton
+                            onClick={() => this.openAbsentOrLateDialog('absent')}
+                            mini={true}
+                            style={{ 
+                                position: 'absolute',
+                                right: 20,
+                                top: this.state.RecordOfMeeting.AbsentsOrLates.Absents.length ? 32 : 7
+                            }}
+                        >
+                            <ContentAdd />
+                        </FloatingActionButton>:
+                        null
+                    }
+                </AbsentsOrLatesCard>
+                <AbsentsOrLatesCard>
+                    <CardHeader title="Atrasados" />
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Lates.map((a, i) => {
-                            a.PETiano = this.state.PETianos[a.PETianoId];
                             return (
                                 <MyChip
-                                    key={i}
+                                    key={a.Id}
                                     backgroundColor={a.IsJustified ? lightGreen300 : red300}
+                                    data-tip={a.Reason}
+                                    onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Lates')}
                                 >
                                     <Avatar src={a.PETiano.Photo} />
                                     {a.PETiano.Name}
@@ -240,6 +307,21 @@ class RecordOfMeetingCard extends Component {
                         }
                         )}
                     </AbsentsOrLatesList>
+                    {
+                        this.state.isEditing ?
+                        <FloatingActionButton
+                            onClick={() => this.openAbsentOrLateDialog('late')}
+                            mini={true}
+                            style={{
+                                position: 'absolute',
+                                right: 20,
+                                top: this.state.RecordOfMeeting.AbsentsOrLates.Lates.length ? 32 : 7
+                            }}
+                        >
+                            <ContentAdd />
+                        </FloatingActionButton> :
+                        null
+                    }
                 </AbsentsOrLatesCard>
                 {Object.entries(this.state.RecordOfMeeting.AgendaPoints).map((val, i) => {
                     let title = "";
@@ -275,9 +357,8 @@ class RecordOfMeetingCard extends Component {
                 {
                     this.state.isEditing ? null:
                     <CardActions>
-                        <RaisedButton
+                        <FlatButton
                             label="Baixar"
-                            primary={true}
                             icon={<FileDownloadIcon/>}
                         />
                     </CardActions>
@@ -289,6 +370,13 @@ class RecordOfMeetingCard extends Component {
                     ateiro={this.state.Ateiro}
                     save={this.saveAteiroOrPresident}
                 />
+                <RecordOfMeetingAddAbsentOrLateDialog
+                    open={this.state.isAddingAbsentOrLate}
+                    onRequestClose={this.closeAbsentOrLateDialog}
+                    type={this.state.typeOfAbsentOrLate}
+                    save={this.saveAbsentOrLate}
+                />
+                <ReactTooltip place="top" type="dark" effect="solid" />
             </Paper>
         );
     }
@@ -303,9 +391,10 @@ const PresidentAndAteiroCard = styled(Card)`
 `;
 const AbsentsOrLatesCard = styled(Card)`
     margin: 3% 2%;
-    background-color: ${orange900}!important;
+    position: relative;
 `;
 const AbsentsOrLatesList = styled.div`
+    background-color: ${orange900}!important;
     display: flex;
     flexWrap: wrap;
 `;

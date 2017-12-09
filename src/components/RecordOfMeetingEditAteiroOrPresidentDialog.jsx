@@ -8,13 +8,10 @@ import PETianoService from '../services/PETianoService';
 
 class RecordOfMeetingEditAteiroOrPresidentDialog extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            PETianos: [],
-            president: (props.president.Profile === 1 || props.president.Profile === 3) ? props.president.Id : null,
-            ateiro: (props.ateiro.Profile === 1 || props.ateiro.Profile === 3) ? props.ateiro.Id : null
-        }
+    state = {
+        PETianos: [],
+        president: (this.props.president.Profile === 1 || this.props.president.Profile === 3) ? this.props.president.Id : null,
+        ateiro: (this.props.ateiro.Profile === 1 || this.props.ateiro.Profile === 3) ? this.props.ateiro.Id : null
     }
     
     async componentDidMount() {

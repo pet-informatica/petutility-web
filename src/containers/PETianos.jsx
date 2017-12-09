@@ -27,7 +27,7 @@ class PETianos extends PureComponent {
 
     async componentDidMount() {
         await PETianoService.loadAll();
-        const data = PETianoService.getAsArray();
+        const data = await PETianoService.getAsArray();
         this.setState({
             PETianos: data,
             loading: false
