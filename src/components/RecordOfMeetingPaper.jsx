@@ -203,6 +203,8 @@ class RecordOfMeetingCard extends Component {
         data.PETiano = await PETianoService.get(data.PETianoId);
         let rec = this.state.RecordOfMeeting;
         rec = JSON.parse(JSON.stringify(rec));
+        rec.AbsentsOrLates.Absents = rec.AbsentsOrLates.Absents.filter(a => a.PETianoId !== data.PETianoId);
+        rec.AbsentsOrLates.Lates = rec.AbsentsOrLates.Lates.filter(a => a.PETianoId !== data.PETianoId);
         if (absentOrLate.Type === 1) {
             rec.AbsentsOrLates.Absents.push(data);
         } else {
@@ -261,15 +263,17 @@ class RecordOfMeetingCard extends Component {
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Absents.map((a, i) =>{
                             return (
-                                <MyChip 
-                                    key={a.Id}
-                                    backgroundColor={a.IsJustified ? lightGreen300 : red300}
-                                    onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Absents')}
-                                    data-tip={a.Reason}
-                                >
-                                    <Avatar src={a.PETiano.Photo} />
-                                    {a.PETiano.Name}
-                                </MyChip>
+                                <div key={a.Id}>
+                                    <MyChip
+                                        backgroundColor={a.IsJustified ? lightGreen300 : red300}
+                                        onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Absents')}
+                                        data-tip={a.Reason}
+                                    >
+                                        <Avatar src={a.PETiano.Photo} />
+                                        {a.PETiano.Name}
+                                    </MyChip>
+                                    <ReactTooltip place="top" type="dark" effect="solid" />
+                                </div>
                             )}
                         )}
                     </AbsentsOrLatesList>
@@ -294,15 +298,17 @@ class RecordOfMeetingCard extends Component {
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Lates.map((a, i) => {
                             return (
-                                <MyChip
-                                    key={a.Id}
-                                    backgroundColor={a.IsJustified ? lightGreen300 : red300}
-                                    data-tip={a.Reason}
-                                    onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Lates')}
-                                >
-                                    <Avatar src={a.PETiano.Photo} />
-                                    {a.PETiano.Name}
-                                </MyChip>
+                                <div key={a.Id}>
+                                    <MyChip
+                                        backgroundColor={a.IsJustified ? lightGreen300 : red300}
+                                        data-tip={a.Reason}
+                                        onRequestDelete={() => this.deleteAbsentOrLate(a.Id, 'Lates')}
+                                    >
+                                        <Avatar src={a.PETiano.Photo} />
+                                        {a.PETiano.Name}
+                                    </MyChip>
+                                    <ReactTooltip place="top" type="dark" effect="solid" />
+                                </div>
                             )
                         }
                         )}
@@ -376,7 +382,6 @@ class RecordOfMeetingCard extends Component {
                     type={this.state.typeOfAbsentOrLate}
                     save={this.saveAbsentOrLate}
                 />
-                <ReactTooltip place="top" type="dark" effect="solid" />
             </Paper>
         );
     }

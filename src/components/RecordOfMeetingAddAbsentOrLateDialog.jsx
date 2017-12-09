@@ -23,7 +23,8 @@ class RecordOfMeetingAddAbsentOrLateDialog extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             Type: (nextProps.type === "absent" ? 1 : 2),
-            TypeString: (nextProps.type === "absent" ? 'Ausente' : 'Atrasado')
+            TypeString: (nextProps.type === "absent" ? 'Ausente' : 'Atrasado'),
+            isSaving: false
         });
     }
 
