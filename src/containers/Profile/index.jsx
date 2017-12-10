@@ -5,11 +5,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-import ProfilePhoto from '../components/ProfilePhoto';
-import UploadBox from '../components/UploadBox';
-import Utils from '../lib/Utils';
-import AuthProvider from '../lib/AuthProvider';
-import PETianoService from '../services/PETianoService';
+
+import ProfilePhoto from './components/ProfilePhoto';
+import UploadBox from '../../components/UploadBox';
+import Utils from '../../lib/Utils';
+import AuthProvider from '../../lib/AuthProvider';
+import PETianoService from '../../services/PETianoService';
 
 class Profile extends PureComponent {
     

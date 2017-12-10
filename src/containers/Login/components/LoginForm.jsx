@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import Utils from '../lib/Utils';
 
-import AuthProvider from '../lib/AuthProvider';
+import Utils from '../../../lib/Utils';
+import AuthProvider from '../../../lib/AuthProvider';
 
 class LoginForm extends Component {
 

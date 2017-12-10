@@ -4,7 +4,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 
-import PETianoService from '../services/PETianoService';
+import PETianoService from '../../../services/PETianoService';
 
 class RecordOfMeetingEditAteiroOrPresidentDialog extends Component {
 

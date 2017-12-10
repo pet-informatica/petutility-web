@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import AddButton from '../components/AddButton';
-import PETianoCard from '../components/PETianoCard';
-import PETianoService from '../services/PETianoService';
-import Utils from '../lib/Utils';
-import AuthProvider from '../lib/AuthProvider';
+
+import AddButton from '../../components/AddButton';
+import PETianoService from '../../services/PETianoService';
+
+import PETianoCard from './components/PETianoCard';
+
+import Utils from '../../lib/Utils';
+import AuthProvider from '../../lib/AuthProvider';
 
 class PETianos extends PureComponent {
 

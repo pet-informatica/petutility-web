@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { SpeedDial, BubbleList, BubbleListItem } from 'react-speed-dial';
-import { red500, yellow500, orange900 } from 'material-ui/styles/colors';
+import { green500, red500, yellow500, orange900 } from 'material-ui/styles/colors';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -9,6 +9,7 @@ import MoreVert from 'material-ui/svg-icons/navigation/more-vert';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentSave from 'material-ui/svg-icons/content/save';
 import Search from 'material-ui/svg-icons/action/search';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 class RecordOfMeetingMenu extends Component {
 
@@ -108,6 +109,21 @@ class RecordOfMeetingMenu extends Component {
                                 </FloatingActionButton>
                             }
                         />
+                        {
+                            !this.props.isEditing ?
+                            <BubbleListItem
+                                primaryText="Adicionar ponto de pauta"
+                                rightAvatar={
+                                    <FloatingActionButton
+                                        onClick={this.handleClick}
+                                        backgroundColor={green500}
+                                    >
+                                        <ModeEdit />
+                                    </FloatingActionButton>
+                                }
+                            /> :
+                            null                            
+                        }
                     </BubbleList>
                 </SpeedDial>
                 <Dialog

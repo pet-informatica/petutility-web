@@ -3,11 +3,14 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { orange900 } from 'material-ui/styles/colors';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import AuthProvider from '../lib/AuthProvider';
-import Home from './Home';
-import Login from './Login';
-import ForgotPassword from './ForgotPassword';
+
 import Loading from '../components/Loading'
+
+import AuthProvider from '../lib/AuthProvider';
+
+import Home from './Home';
+import Login from './Login/';
+import ForgotPassword from './ForgotPassword/';
 
 const muiTheme = getMuiTheme({
     appBar: {
@@ -17,11 +20,8 @@ const muiTheme = getMuiTheme({
 
 class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            userStatus: 'loading'
-        };
+    state = {
+        userStatus: 'loading'
     }
 
     componentDidMount() {

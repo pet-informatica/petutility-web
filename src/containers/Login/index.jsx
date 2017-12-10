@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { Redirect, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import Dialog from 'material-ui/Dialog';
-import AuthProvider from '../lib/AuthProvider';
-import { Redirect, withRouter } from 'react-router-dom';
 
-import LoginForm from '../components/LoginForm';
+import AuthProvider from '../../lib/AuthProvider';
+
+import LoginForm from './components/LoginForm';
 
 class Login extends Component {
 

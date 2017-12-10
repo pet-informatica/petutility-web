@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Loading from './Loading';
-import PETianoService from '../services/PETianoService';
 import { Card, CardHeader, CardTitle, CardText } from 'material-ui/Card';
+
+import Loading from '../../../components/Loading';
+import PETianoService from '../../../services/PETianoService';
 
 class ActivityCard extends Component {
 

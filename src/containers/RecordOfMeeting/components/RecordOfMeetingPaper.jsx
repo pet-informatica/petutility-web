@@ -14,19 +14,20 @@ import FileDownloadIcon from 'material-ui/svg-icons/file/file-download';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import Loading from './Loading';
+import Loading from '../../../components/Loading';
+
 import AgendaPointCard from './AgendaPointCard';
 import AddAgendaPointDialog from './AddAgendaPointDialog';
 import EditAteiroOrPresidentDialog from './EditAteiroOrPresidentDialog';
 import AddAbsentOrLateDialog from './AddAbsentOrLateDialog';
 
-import Constants from '../lib/Constants';
+import Constants from '../../../lib/Constants';
 
-import AgendaPointFactory from '../factories/AgendaPointFactory';
-import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
-import AbsentOrLateFactory from '../factories/AbsentOrLateFactory';
+import AgendaPointFactory from '../../../factories/AgendaPointFactory';
+import RecordOfMeetingFactory from '../../../factories/RecordOfMeetingFactory';
+import AbsentOrLateFactory from '../../../factories/AbsentOrLateFactory';
 
-import PETianoService from '../services/PETianoService';
+import PETianoService from '../../../services/PETianoService';
 
 class RecordOfMeetingCard extends Component {
 

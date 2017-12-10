@@ -2,10 +2,12 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import Loading from '../components/Loading';
-import RecordOfMeetingPaper from '../components/RecordOfMeetingPaper';
-import RecordOfMeetingFactory from '../factories/RecordOfMeetingFactory';
-import RecordOfMeetingMenu from '../components/RecordOfMeetingMenu';
+
+import Loading from '../../components/Loading';
+
+import RecordOfMeetingPaper from './components/RecordOfMeetingPaper';
+import RecordOfMeetingFactory from '../../factories/RecordOfMeetingFactory';
+import RecordOfMeetingMenu from './components/RecordOfMeetingMenu';
 
 class RecordOfMeeting extends PureComponent {
 

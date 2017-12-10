@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import ForgotPasswordForm from '../components/ForgotPasswordForm';
+import ForgotPasswordForm from './components/ForgotPasswordForm';
 
 class ForgotPassword extends Component {
 

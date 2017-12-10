@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import AddButton from '../components/AddButton';
-import Loading from '../components/Loading';
-import IdeaCard from '../components/IdeaCard';
-import IdeaDialog from '../components/IdeaDialog';
-import IdeaFactory from '../factories/IdeaFactory';
+
+import AddButton from '../../components/AddButton';
+import Loading from '../../components/Loading';
+
+import IdeaCard from './components/IdeaCard';
+import IdeaDialog from './components/IdeaDialog';
+import IdeaFactory from '../../factories/IdeaFactory';
 
 class Ideas extends PureComponent {
   

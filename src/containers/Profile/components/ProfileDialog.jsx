@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
-import Utils from '../lib/Utils';
+import Utils from '../../../lib/Utils';
 
 class ProfileDialog extends PureComponent {
 

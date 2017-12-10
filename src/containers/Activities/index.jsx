@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import Loading from '../components/Loading';
-import AddButton from '../components/AddButton';
-import ActivityCard from '../components/ActivityCard';
-import ActivityDialog from '../components/ActivityDialog';
-import ActivityFactory from '../factories/ActivityFactory';
+
+import ActivityCard from './components/ActivityCard';
+import ActivityDialog from './components/ActivityDialog';
+import ActivityFactory from '../../factories/ActivityFactory';
+
+import Loading from '../../components/Loading';
+import AddButton from '../../components/AddButton';
 
 class Activity extends PureComponent {
 

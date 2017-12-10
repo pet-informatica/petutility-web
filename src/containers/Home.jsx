@@ -10,12 +10,12 @@ import LightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline';
 import History from 'material-ui/svg-icons/action/history';
 import People from 'material-ui/svg-icons/social/people';
 
-import Ideas from './Ideas';
-import Calendar from './Calendar';
-import Activities from './Activities';
-import Profile from './Profile';
-import PETianos from './PETianos';
-import RecordOfMeeting from './RecordOfMeeting';
+import Ideas from './Ideas/';
+import Calendar from './Calendar/';
+import Activities from './Activities/';
+import Profile from './Profile/';
+import PETianos from './PETianos/';
+import RecordOfMeeting from './RecordOfMeeting/';
 
 import MenuItem from '../components/MenuItem';
 import ProfileMenu from '../components/ProfileMenu';

@@ -3,7 +3,8 @@ import { Card, CardActions, CardHeader } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-import CardText from './CardText';
+
+import CardText from '../../../components/CardText';
 
 class AgendaPointCard extends Component {
 

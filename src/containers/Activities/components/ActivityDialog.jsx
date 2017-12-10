@@ -5,7 +5,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
-import Utils from '../lib/Utils';
+
+import Utils from '../../../lib/Utils';
 
 class ActivityDialog extends Component {
 

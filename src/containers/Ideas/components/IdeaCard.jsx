@@ -3,11 +3,13 @@ import Dialog from 'material-ui/Dialog';
 import { Card, CardActions, CardHeader, CardTitle } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import CardText from './CardText';
+
+import CardText from '../../../components/CardText';
+import Loading from '../../../components/Loading';
+
 import IdeaDialog from './IdeaDialog';
-import Loading from './Loading';
-import IdeaFactory from '../factories/IdeaFactory';
-import PETianoService from '../services/PETianoService';
+import IdeaFactory from '../../../factories/IdeaFactory';
+import PETianoService from '../../../services/PETianoService';
 
 class IdeaCard extends Component {
 

@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 
-import PETianoService from '../services/PETianoService';
+import PETianoService from '../../../services/PETianoService';
 
 class RecordOfMeetingAddAbsentOrLateDialog extends Component {
 

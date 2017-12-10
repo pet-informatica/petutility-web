@@ -5,10 +5,10 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
-import Utils from '../lib/Utils';
 import Dialog from 'material-ui/Dialog';
 
-import AuthProvider from '../lib/AuthProvider';
+import Utils from '../../../lib/Utils';
+import AuthProvider from '../../../lib/AuthProvider';
 
 class ForgotPasswordForm extends Component {
 

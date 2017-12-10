@@ -5,6 +5,7 @@ import Avatar from 'material-ui/Avatar';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
 import Menu from 'material-ui/Menu';
+
 import AuthProvider from '../lib/AuthProvider';
 
 class ProfileMenu extends Component {

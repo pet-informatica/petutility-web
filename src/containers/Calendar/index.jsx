@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react';
 import BigCalendar from 'react-big-calendar';
 import styled from 'styled-components';
-import AddButton from '../components/AddButton';
-import Loading from '../components/Loading';
-import EventDialog from '../components/EventDialog';
-import EventFactory from '../factories/EventFactory';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import '../../node_modules/react-big-calendar/lib/css/react-big-calendar.css';
+
+import AddButton from '../../components/AddButton';
+import Loading from '../../components/Loading';
+import EventDialog from './components/EventDialog';
+import EventFactory from '../../factories/EventFactory';
+
+import '../../../node_modules/react-big-calendar/lib/css/react-big-calendar.css';
 
 BigCalendar.momentLocalizer(moment);
 
