@@ -82,7 +82,7 @@ class RecordOfMeetingCard extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    async componentWillReceiveProps(nextProps) {
         const RecordOfMeeting = this.propsToObject(nextProps);
         this.setState({
             RecordOfMeeting: RecordOfMeeting,
@@ -92,10 +92,21 @@ class RecordOfMeetingCard extends Component {
 
     async componentDidMount() {
         let PETianos = {};
+        let rec = this.state.RecordOfMeeting;
         await PETianoService.loadAll();
+        const data = await AgendaPointFactory.query();
+        data.sort((a, b) => {
+            if (a.Id > b.Id)
+                return 1;
+            if (a.Id < b.Id)
+                return -1;
+            return 0;
+        });
+        rec.AgendaPoints.NewOutside = data;
         const President = await PETianoService.get(this.state.RecordOfMeeting.PresidentId);
         const Ateiro = await PETianoService.get(this.state.RecordOfMeeting.AteiroId);
         this.setState({
+            RecordOfMeeting: rec,
             loading: false,
             PETianos: PETianos,
             President: President,
@@ -388,9 +399,12 @@ class RecordOfMeetingCard extends Component {
                         case "NewInside":
                             title = "Novos";
                             break;
+                        case "NewOutside":
+                            title = "Novos para a próxima ata";
+                            break;
                         default:
                     }
-                    if (val[0] === "NewOutside")
+                    if (val[0] === "NewOutside" && this.state.RecordOfMeeting.AgendaPoints[val[0]].length === 0)
                         return null;
                     return (
                         <div key={i}>
@@ -410,18 +424,18 @@ class RecordOfMeetingCard extends Component {
                     );
                 })}
                 <RecordOfMeetingCardActions>
+                    <FlatButton
+                        onClick={this.openAddAgendaPointDialog}
+                        label="Adicionar Ponto de Pauta"
+                        icon={<ContentAdd />}
+                    />
                     {
-                        this.state.isEditing ? 
+                        !this.state.isEditing ? 
                         <FlatButton
-                            onClick={this.openAddAgendaPointDialog}
-                            label="Adicionar Ponto de Pauta"
-                            icon={<ContentAdd />}
-                        /> :
-                        <FlatButton
-                            label="Baixar"
-                            onClick={this.downloadRecordOfMeeting}
-                            icon={<FileDownloadIcon />}
-                        />
+                        label="Baixar"
+                        onClick={this.downloadRecordOfMeeting}
+                        icon={<FileDownloadIcon />}
+                        />: null
                     }
                 </RecordOfMeetingCardActions>
                 <EditAteiroOrPresidentDialog 

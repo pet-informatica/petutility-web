@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import { Card, CardActions, CardHeader, CardTitle } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
 import CardText from '../../../components/CardText';
@@ -95,8 +94,8 @@ class IdeaCard extends Component {
                         /> : <Loading />
                 }
                 <CardActions>
-                    <RaisedButton label="Editar" primary={true} onClick={this.openEditForm}/>
-                    <RaisedButton label="Delete" secondary={true} onClick={this.openDeleteForm}/>
+                    <FlatButton label="Editar" primary={true} onClick={this.openEditForm}/>
+                    <FlatButton label="Delete" secondary={true} onClick={this.openDeleteForm}/>
                 </CardActions>
                 <Dialog
                     title="Confirmar Remoção"
