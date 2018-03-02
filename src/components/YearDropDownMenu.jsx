@@ -8,7 +8,7 @@ class YearDropDownMenu extends Component {
         super(props);
         this.years = [];
         this.currentYear = new Date().getFullYear();
-        for(var i = this.currentYear; i >= this.currentYear - 100; i -= 1)
+        for(var i = this.currentYear; i >= this.currentYear - 10; i -= 1)
             this.years.push(i);
     }
 
@@ -17,9 +17,9 @@ class YearDropDownMenu extends Component {
         return (
             <DropDownMenu value={value || -1} {...props} >
                 <MenuItem value={-1} primaryText={'Ano'} disabled={true} />
-                {
-                    this.years.map((val) => <MenuItem key={val} value={val} primaryText={'' + val} />)
-                }
+                {this.years.map((val) => 
+                    <MenuItem key={val} value={val} primaryText={'' + val} />
+                )}
             </DropDownMenu>
         );
     }

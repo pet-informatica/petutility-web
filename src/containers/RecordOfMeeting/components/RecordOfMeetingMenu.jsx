@@ -86,7 +86,10 @@ class RecordOfMeetingMenu extends Component {
                             <BubbleListItem
                                 primaryText="Salvar ata"
                                 rightAvatar={
-                                    <FloatingActionButton onClick={() => this.handleOpen(this.messages.close, this.props.closeRecordOfMeeting)} backgroundColor={red500}>
+                                    <FloatingActionButton
+                                        onClick={() => this.handleOpen(this.messages.close, this.props.closeRecordOfMeeting)}
+                                        backgroundColor={red500}
+                                    >
                                         <ContentSave />
                                     </FloatingActionButton>
                                 }
@@ -94,7 +97,10 @@ class RecordOfMeetingMenu extends Component {
                             <BubbleListItem
                                 primaryText="Criar ata"
                                 rightAvatar={
-                                    <FloatingActionButton onClick={() => this.handleOpen(this.messages.create, this.props.createRecordOfMeeting)} backgroundColor={yellow500}>
+                                    <FloatingActionButton
+                                        onClick={() => this.handleOpen(this.messages.create, this.props.createRecordOfMeeting)}
+                                        backgroundColor={yellow500}
+                                    >
                                         <ContentAdd />
                                     </FloatingActionButton>
                                 }
@@ -103,7 +109,7 @@ class RecordOfMeetingMenu extends Component {
                         <BubbleListItem
                             primaryText="Procurar atas"
                             rightAvatar={
-                                <FloatingActionButton onClick={this.handleClick}>
+                                <FloatingActionButton onClick={this.props.openSearchBox}>
                                     <Search />
                                 </FloatingActionButton>
                             }

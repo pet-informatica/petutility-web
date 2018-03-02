@@ -291,7 +291,7 @@ class RecordOfMeetingCard extends Component {
             return (<Loading/>);
         return (
             <Paper zDepth={2}>
-                <CardTitle title={`Reunião ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
+                <CardTitle title={`Reunião número ${this.state.RecordOfMeeting.Id} - ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
                 <PresidentAndAteiroCard style={{position: 'relative'}}>
                     <CardHeader
                         title="Presidente"

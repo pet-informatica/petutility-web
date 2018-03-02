@@ -5,7 +5,14 @@ class RecordOfMeetingFactory {
     static resource = 'recordOfMeeting';
 
     static async query(query) {
-        let data = await API.request(`/${this.resource}?${JSON.stringify(query)}`, 'GET');
+        let list = '';
+        for (const key in query) {
+            if (query.hasOwnProperty(key)) {
+                const element = query[key];
+                list+=`${key}=${element}&`;
+            }
+        }
+        let data = await API.request(`/${this.resource}?${list}`, 'GET');
         return await data.json();
     }
 

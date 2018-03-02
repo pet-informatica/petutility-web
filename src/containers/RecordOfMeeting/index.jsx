@@ -3,11 +3,13 @@ import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 
+import RecordOfMeetingFactory from '../../factories/RecordOfMeetingFactory';
+
 import Loading from '../../components/Loading';
 
 import RecordOfMeetingPaper from './components/RecordOfMeetingPaper';
-import RecordOfMeetingFactory from '../../factories/RecordOfMeetingFactory';
 import RecordOfMeetingMenu from './components/RecordOfMeetingMenu';
+import SearchRecordOfMeetingDialog from './components/SearchRecordOfMeetingDialog';
 
 class RecordOfMeeting extends PureComponent {
 
@@ -15,6 +17,7 @@ class RecordOfMeeting extends PureComponent {
         super(props);
         this.state = {
             loading: true,
+            isSearching: false,
             recordsOfMeeting: [],
             recordOfMeeting: null,
             isEditing: false
@@ -22,21 +25,25 @@ class RecordOfMeeting extends PureComponent {
         this.handleChange = this.handleChange.bind(this);
         this.createRecordOfMeeting = this.createRecordOfMeeting.bind(this);
         this.closeRecordOfMeeting = this.closeRecordOfMeeting.bind(this);
+        this.fetchRecordsOfMeeting = this.fetchRecordsOfMeeting.bind(this);
     }
 
     async fetchRecordsOfMeeting(inYear) {
-        let { year } = queryString.parse(this.props.location.search);
+        let year = (new Date()).getFullYear();
         year = inYear || year;
-        const recordsOfMeeting = await RecordOfMeetingFactory.query({year: year});
+        const recordsOfMeeting = await RecordOfMeetingFactory.query({ year: year });
         const recordOfMeeting = recordsOfMeeting.length > 0 ? 
             await RecordOfMeetingFactory.get(recordsOfMeeting[0].Id) :
             null;
-        this.setState({
+        let state = {
             loading: false,
-            recordsOfMeeting: recordsOfMeeting,
-            recordOfMeeting: recordOfMeeting,
-            isEditing: recordOfMeeting && (recordOfMeeting.Status === 1)
-        });
+            recordsOfMeeting: recordsOfMeeting
+        };
+        if (!inYear) {
+            state.recordOfMeeting = recordOfMeeting;
+            state.isEditing = recordOfMeeting && (recordOfMeeting.Status === 1);
+        }
+        this.setState(state);
     }
 
     componentDidMount() {
@@ -75,6 +82,10 @@ class RecordOfMeeting extends PureComponent {
         this.handleChange(this.state.recordOfMeeting.Id);
     }
 
+    openSearchBox = () => this.setState({isSearching: true})
+
+    closeSearchBox = () => this.setState({isSearching: false})
+
     render() {
         if (this.state.loading)
             return (<Loading/>);
@@ -88,6 +99,15 @@ class RecordOfMeeting extends PureComponent {
                     isEditing={this.state.isEditing}
                     createRecordOfMeeting={this.createRecordOfMeeting}
                     closeRecordOfMeeting={this.closeRecordOfMeeting}
+                    openSearchBox={this.openSearchBox}
+                    recordsOfMeeting={this.state.recordsOfMeeting}
+                />
+                <SearchRecordOfMeetingDialog
+                    open={this.state.isSearching}
+                    onRequestClose={this.closeSearchBox}
+                    handleRecordOfMeetingChange={this.handleChange}
+                    handleYearChange={this.fetchRecordsOfMeeting}
+                    recordsOfMeeting={this.state.recordsOfMeeting}
                 />
             </Wrapper>
         );
