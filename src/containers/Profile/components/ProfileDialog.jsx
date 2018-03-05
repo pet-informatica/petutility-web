@@ -64,9 +64,3 @@ export default ProfileDialog;
 
 const Form = styled.form``;
 const Div = styled.div``;
-const ProfilePhoto = styled.img`
-    width: 20vw;
-    height: 20vw;
-    border-radius: 50%;
-    margin: auto;
-`;

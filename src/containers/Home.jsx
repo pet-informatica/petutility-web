@@ -11,7 +11,7 @@ import History from 'material-ui/svg-icons/action/history';
 import People from 'material-ui/svg-icons/social/people';
 
 import Ideas from './Ideas/';
-import Calendar from './Calendar/';
+// import Calendar from './Calendar/';
 import Activities from './Activities/';
 import Profile from './Profile/';
 import PETianos from './PETianos/';
@@ -71,7 +71,7 @@ class Home extends Component {
                     onRequestChange={(drawerOpen) => this.setState({drawerOpen: drawerOpen})} 
                 >
                     <MenuItem primaryText="Reunião" leftIcon={<Description />} pathname="/recordOfMeeting" onTouchTap={this.handleClose} />
-                    <MenuItem primaryText="Calendário" leftIcon={<EventNote />} pathname="/calendar" onTouchTap={this.handleClose} />
+                    {/* <MenuItem primaryText="Calendário" leftIcon={<EventNote />} pathname="/calendar" onTouchTap={this.handleClose} /> */}
                     <MenuItem primaryText="Ideias" leftIcon={<LightbulbOutline />} pathname="/ideas" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="Resumo de Atividades" leftIcon={<History />} pathname="/activities" onTouchTap={this.handleClose} />
                     <MenuItem primaryText="PETianos" leftIcon={<People />} pathname="/users" onTouchTap={this.handleClose} />
@@ -79,7 +79,7 @@ class Home extends Component {
                 <Switch>
                     <Route exact path="/recordOfMeeting" render={() => <RecordOfMeeting />} />
                     <Route exact path="/ideas" render={() => <Ideas />} />
-                    <Route exact path="/calendar" render={() => <Calendar />} />
+                    {/* <Route exact path="/calendar" render={() => <Calendar />} /> */}
                     <Route exact path="/activities" render={() => <Activities />} />
                     <Route exact path="/profile" render={() => <Profile />} />
                     <Route exact path="/users" render={() => <PETianos />} />

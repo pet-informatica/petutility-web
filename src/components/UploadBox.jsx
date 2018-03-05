@@ -59,8 +59,8 @@ const Wrapper = styled.div`
     display: table-row;
 `;
 const Box = styled(Dropzone)`
-    width: 30vw;
-    height: 30vw;
+    width: 20vw;
+    height: 20vw;
     margin: auto;
     text-align: center;
     display: table-cell;
@@ -69,8 +69,7 @@ const Box = styled(Dropzone)`
     border-radius: 10%;
 `;
 const Cell = styled.div`
-    width: 30vw;
-    height: 30vw;
+    width: 20vw;
     display: table-cell;
 `;
 const Text = styled.p``;

@@ -36,7 +36,7 @@ const Image = styled.div`
 `;
 const Span = styled.span`
     background: rgba(0,0,0,.54);
-    padding: 7px 0;
+    padding: 20px 0;
     color: #fff;
     position: absolute;
     bottom: 0;
