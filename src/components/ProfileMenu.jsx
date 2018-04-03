@@ -12,11 +12,18 @@ class ProfileMenu extends Component {
 
     constructor(props) {
         super(props);
-        this.user = AuthProvider.loggedUser;
         this.state = {
             open: false,
-            anchorEl: null
+            anchorEl: null,
+            user: AuthProvider.loggedUser
         };
+        global.reloadProfilePhoto = this.reload;
+    }
+
+    reload = () => {
+        this.setState({
+            user: AuthProvider.loggedUser
+        })
     }
 
     openPopover = (ev) => {
@@ -39,7 +46,7 @@ class ProfileMenu extends Component {
     render() {
         return (
             <IconButton style={styles.icon} onClick={this.openPopover}>
-                <Avatar src={this.user.Photo}/>
+                <Avatar src={this.state.user.Photo}/>
                 <Popover
                     open={this.state.open}
                     anchorEl={this.state.anchorEl}

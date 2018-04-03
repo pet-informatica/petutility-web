@@ -82,6 +82,11 @@ class Profile extends PureComponent {
             isUpdating: false
         });
         this.closeForms();
+        let updatedUser = await PETianoService.get(AuthProvider.loggedUser.Id);
+        AuthProvider.loggedUser = updatedUser;
+        if (global.reloadProfilePhoto) {
+            global.reloadProfilePhoto();
+        }
     }
 
     async savePasswordChange(ev) {

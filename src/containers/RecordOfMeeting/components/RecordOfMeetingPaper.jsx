@@ -292,7 +292,10 @@ class RecordOfMeetingCard extends Component {
         return (
             <Paper zDepth={2}>
                 <CardTitle title={`Reunião número ${this.state.RecordOfMeeting.Id} - ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
-                <PresidentAndAteiroCard style={{position: 'relative'}}>
+                <PresidentAndAteiroCard
+                    style={{position: 'relative'}}
+                    zDepth={2}
+                >
                     <CardHeader
                         title="Presidente"
                         subtitle={this.state.President.Name}
@@ -316,7 +319,7 @@ class RecordOfMeetingCard extends Component {
                         </FloatingActionButton>
                     }
                 </PresidentAndAteiroCard>
-                <AbsentsOrLatesCard>
+                <AbsentsOrLatesCard zDepth={2}>
                     <CardHeader title="Ausentes"/>
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Absents.map((a, i) =>{
@@ -351,7 +354,7 @@ class RecordOfMeetingCard extends Component {
                         null
                     }
                 </AbsentsOrLatesCard>
-                <AbsentsOrLatesCard>
+                <AbsentsOrLatesCard zDepth={2}>
                     <CardHeader title="Atrasados" />
                     <AbsentsOrLatesList>
                         {this.state.RecordOfMeeting.AbsentsOrLates.Lates.map((a, i) => {
@@ -474,8 +477,21 @@ const AbsentsOrLatesCard = styled(Card)`
 `;
 const AbsentsOrLatesList = styled.div`
     background-color: ${orange900}!important;
-    display: flex;
-    flexWrap: wrap;
+    display: grid;
+
+    grid-template-columns: repeat(1, 1fr);
+
+    @media (min-width: 700px) { 
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1000px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1300px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
 `;
 const MyChip = styled(Chip)`
     margin: 15px 5px!important;

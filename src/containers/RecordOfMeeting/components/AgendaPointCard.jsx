@@ -11,7 +11,12 @@ class AgendaPointCard extends Component {
     state = {
         AgendaPoint: this.props.AgendaPoint,
         isEditing: false,
-        isDeleting: false
+        isDeleting: false,
+        expanded: false
+    }
+
+    handleExpandChange = (expanded) => {
+        this.setState({expanded: expanded});
     }
 
     handleTextChange = (ev, param) => {
@@ -87,8 +92,24 @@ class AgendaPointCard extends Component {
             transform: 'translate(-50%, -50%)'
         };
 
+        const styles = {
+            opened: {
+                marginTop: 10,
+                marginBottom: 10
+            },
+            closed: {
+                marginLeft: 10,
+                marginRight: 10
+            }
+        };
+
         return (
-            <Card>
+            <Card 
+                expanded={this.state.expanded}
+                onExpandChange={this.handleExpandChange}
+                style={this.state.expanded ? styles.opened : styles.closed}
+                zDepth={2}
+            >
                 <CardHeader
                     titleStyle={{fontWeight: 'normal'}}
                     title={this.state.AgendaPoint.Title}
