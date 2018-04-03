@@ -12,7 +12,6 @@
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.1.0",
     "react-router-dom": "^4.1.2",
-    "react-scripts": "1.0.10",
     "react-speed-dial": "^0.4.7",
     "react-tap-event-plugin": "^2.0.1",
     "react-tooltip": "^3.4.0",
@@ -21,8 +20,13 @@
   "scripts": {
     "devStart": "npm install && npm start",
     "start": "react-scripts start",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gh-pages": "^1.1.0",
+    "react-scripts": "1.0.10"
   }
 }

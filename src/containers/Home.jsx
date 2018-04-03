@@ -5,7 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 
 import Description from 'material-ui/svg-icons/action/description';
-import EventNote from 'material-ui/svg-icons/notification/event-note';
+// import EventNote from 'material-ui/svg-icons/notification/event-note';
 import LightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline';
 import History from 'material-ui/svg-icons/action/history';
 import People from 'material-ui/svg-icons/social/people';
