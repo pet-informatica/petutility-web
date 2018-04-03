@@ -8,8 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 injectTapEventPlugin();
 
 ReactDOM.render(
-    // basename="/petutility-web"
-    <BrowserRouter >
+    <BrowserRouter basename="/utility">
         <App />
     </BrowserRouter>,
     document.getElementById('root')

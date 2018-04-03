@@ -5,17 +5,17 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 
 import Description from 'material-ui/svg-icons/action/description';
-// import EventNote from 'material-ui/svg-icons/notification/event-note';
 import LightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline';
-import History from 'material-ui/svg-icons/action/history';
 import People from 'material-ui/svg-icons/social/people';
+// import History from 'material-ui/svg-icons/action/history';
+// import EventNote from 'material-ui/svg-icons/notification/event-note';
 
 import Ideas from './Ideas/';
-// import Calendar from './Calendar/';
-// import Activities from './Activities/';
 import Profile from './Profile/';
 import PETianos from './PETianos/';
 import RecordOfMeeting from './RecordOfMeeting/';
+// import Calendar from './Calendar/';
+// import Activities from './Activities/';
 
 import MenuItem from '../components/MenuItem';
 import ProfileMenu from '../components/ProfileMenu';
