@@ -286,12 +286,18 @@ class RecordOfMeetingCard extends Component {
         });
     }
 
+    handleAgendaPointExpand = (id) => {
+        this.setState({
+            CurrAgendaPoint: (id !== this.state.CurrAgendaPoint) ? id : null
+        });
+    }
+
     render() {
         if (this.state.loading)
             return (<Loading/>);
         return (
             <Paper zDepth={2}>
-                <CardTitle title={`Reunião número ${this.state.RecordOfMeeting.Id} - ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
+                <CardTitle title={`Reunião #${this.state.RecordOfMeeting.Id} - ${this.state.RecordOfMeeting.Date.toLocaleDateString('en-US')}`} />
                 <PresidentAndAteiroCard
                     style={{position: 'relative'}}
                     zDepth={2}
@@ -417,6 +423,8 @@ class RecordOfMeetingCard extends Component {
                                     <AgendaPointCard
                                         key={a.Id}
                                         AgendaPoint={a}
+                                        expanded={this.state.CurrAgendaPoint === a.Id}
+                                        handleExpandChange={() => this.handleAgendaPointExpand(a.Id)}
                                         IsOpen={this.state.isEditing} 
                                         handleEdit={this.editAgendaPoint}
                                         handleDelete={this.deleteAgendaPoint}

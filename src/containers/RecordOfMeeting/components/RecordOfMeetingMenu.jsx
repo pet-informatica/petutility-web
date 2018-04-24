@@ -22,7 +22,8 @@ class RecordOfMeetingMenu extends Component {
             open: false,
             message: '',
             callback: null,
-            speedDialOpened: false
+            speedDialOpened: false,
+            CurrAgendaPoint: null
         };
     }
 
@@ -81,40 +82,42 @@ class RecordOfMeetingMenu extends Component {
                     isOpen={this.state.speedDialOpened}
                     onChange={this.onChangeSpeedDial}
                 >
-                    <BubbleList>
-                        {this.props.isEditing ?
+                    {!this.state.speedDialOpened ? null:
+                        <BubbleList>
+                            {this.props.isEditing ?
+                                <BubbleListItem
+                                    primaryText="Salvar ata"
+                                    rightAvatar={
+                                        <FloatingActionButton
+                                            onClick={() => this.handleOpen(this.messages.close, this.props.closeRecordOfMeeting)}
+                                            backgroundColor={red500}
+                                        >
+                                            <ContentSave />
+                                        </FloatingActionButton>
+                                    }
+                                />:
+                                <BubbleListItem
+                                    primaryText="Criar ata"
+                                    rightAvatar={
+                                        <FloatingActionButton
+                                            onClick={() => this.handleOpen(this.messages.create, this.props.createRecordOfMeeting)}
+                                            backgroundColor={yellow500}
+                                        >
+                                            <ContentAdd />
+                                        </FloatingActionButton>
+                                    }
+                                />
+                            }
                             <BubbleListItem
-                                primaryText="Salvar ata"
+                                primaryText="Procurar atas"
                                 rightAvatar={
-                                    <FloatingActionButton
-                                        onClick={() => this.handleOpen(this.messages.close, this.props.closeRecordOfMeeting)}
-                                        backgroundColor={red500}
-                                    >
-                                        <ContentSave />
-                                    </FloatingActionButton>
-                                }
-                            />:
-                            <BubbleListItem
-                                primaryText="Criar ata"
-                                rightAvatar={
-                                    <FloatingActionButton
-                                        onClick={() => this.handleOpen(this.messages.create, this.props.createRecordOfMeeting)}
-                                        backgroundColor={yellow500}
-                                    >
-                                        <ContentAdd />
+                                    <FloatingActionButton onClick={this.props.openSearchBox}>
+                                        <Search />
                                     </FloatingActionButton>
                                 }
                             />
-                        }
-                        <BubbleListItem
-                            primaryText="Procurar atas"
-                            rightAvatar={
-                                <FloatingActionButton onClick={this.props.openSearchBox}>
-                                    <Search />
-                                </FloatingActionButton>
-                            }
-                        />
-                    </BubbleList>
+                        </BubbleList>
+                    }
                 </SpeedDial>
                 <Dialog
                     open={this.state.open}

@@ -85,6 +85,7 @@ class AgendaPointCard extends Component {
                 onClick={this.handleClose}
             />
         ];
+        
         const dialogStyle = {
             position: 'absolute',
             left: '50%',
@@ -105,9 +106,9 @@ class AgendaPointCard extends Component {
 
         return (
             <Card 
-                expanded={this.state.expanded}
-                onExpandChange={this.handleExpandChange}
-                style={this.state.expanded ? styles.opened : styles.closed}
+                expanded={this.props.expanded}
+                onExpandChange={this.props.handleExpandChange}
+                style={this.props.expanded ? styles.opened : styles.closed}
                 zDepth={2}
             >
                 <CardHeader

@@ -40,7 +40,7 @@ class SearchRecordOfMeetingDialog extends Component {
                         return (
                             <Box key={r.Id}>
                                 <TextBox onClick={() => this.props.handleRecordOfMeetingChange(r.Id)}>
-                                    {`Reunião número ${r.Id} - ${r.Date.toLocaleDateString('en-US')}`}
+                                    {`Reunião #${r.Id} - ${r.Date.toLocaleDateString('en-US')}`}
                                 </TextBox>
                             </Box>
                         )
