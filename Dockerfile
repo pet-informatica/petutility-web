@@ -1,8 +1,13 @@
-FROM node:8
+FROM node:8-alpine
 
 MAINTAINER PET
 
-RUN mkdir -pv /www
-WORKDIR /www
+WORKDIR web
 
-CMD npm run devStart
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "start"]
